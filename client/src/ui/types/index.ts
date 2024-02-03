@@ -1,13 +1,17 @@
 export type CoordinatesType = [number, number]
 
-export interface IAddMapFormInfo {
+export interface IMapInfoForm {
+  id?: number;
   name: string;
   img: File | null;
   preview: File | null;
 }
 
-export interface IMap extends IAddMapFormInfo {
+export interface IMap {
   id: number;
+  name: string;
+  img: string;
+  preview: string;
 }
 
 export enum GrenadesTypes {
@@ -20,6 +24,7 @@ export enum GrenadesTypes {
 export interface IRoute {
   path: string;
   page: React.FC;
+  getPathWithParametr?: (parametr: string) => string;
 }
 
 export enum NadeTargetTypes {

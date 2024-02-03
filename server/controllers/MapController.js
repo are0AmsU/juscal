@@ -27,7 +27,7 @@ class MapController {
     }
   }
 
-  async getOneById(req, res) {
+  async getById(req, res) {
     try {
       const map = await Map.findByPk(req.params.id)
       res.json(map)
@@ -36,11 +36,38 @@ class MapController {
     }
   }
 
-  async updateOneById(req, res) {
+  async updateById(req, res) {
     try {
-      const newMap = req.body
-      const updatedMap = await Map.update(newMap, { where: { id: newMap.id } })
+      const { name } = req.body
+      const { img, preview } = req.files
+      const { id } = req.params.id
+      const map = await Map.findOne({ where: { id } })
+      if (img && map.dataValues.img !== img[0].path) {
+        fs.unlink('./' + map.dataValues.img)
+      }
+      if (path && map.dataValues.path !== path[0].path) {
+        fs.unlink('./' + map.dataValues.path)
+      }
+      const newData = { name, img: img[0].path, preview: preview[0].path }
+      const updatedMap = await Map.update(newData, { where: { id } })
       res.json(updatedMap)
+    } catch (error) {
+      res.json(error)
+    }
+  }
+
+  async deleteById(req, res) {
+    try {
+      const { id } = req.params
+      const { img, preview } = await Map.findOne({ where: { id }, attributes: ['preview', 'img'] })
+      fs.unlink('./' + img, (error) => {
+        console.log(error)
+      })
+      fs.unlink('./' + preview, (error) => {
+        console.log(error)
+      })
+      await Map.destroy({ where: { id } })
+      res.json('map deleted')
     } catch (error) {
       res.json(error)
     }

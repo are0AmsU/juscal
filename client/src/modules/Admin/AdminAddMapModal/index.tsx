@@ -1,51 +1,50 @@
 import React from 'react'
 import { createMap } from '../../../http/mapApi'
-import { IAddMapFormInfo } from '../../../ui/types'
+import { IMap } from '../../../ui/types'
+import { IAdminPageContext, useAdminPageContext } from '../../../ui/contexts/AdminPageContext'
 
 const AdminAddMapModal: React.FC = () => {
-  
-  const [addFormInfo, setAddFormInfo] = React.useState<IAddMapFormInfo>({ name: '', img: null, preview: null })
-  
+
+  const { maps, setMaps, setIsAddMapFormOpened } = useAdminPageContext() as IAdminPageContext
+  const nameInputRef = React.useRef<HTMLInputElement>(null)
+  const imgInputRef = React.useRef<HTMLInputElement>(null)
+  const previewInputRef = React.useRef<HTMLInputElement>(null)
+
   const handleAddMapClick = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
-    event.preventDefault()
-    if (addFormInfo.name === '') {
+    const name = nameInputRef.current?.value
+    const img = imgInputRef.current?.files![0]
+    const preview = previewInputRef.current?.files![0]
+    if (name === '') {
       return
     }
-    if (!addFormInfo.img || !addFormInfo.preview) {
+    if (!img || !preview) {
       return
     }
     const formData = new FormData()
-    formData.append('name', addFormInfo.name)
-    formData.append('img', addFormInfo.img)
-    formData.append('preview', addFormInfo.preview)
-    await createMap(formData)
-  }
-
-  const handleAddFormImgInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    if (event.target.files) {
-      setAddFormInfo({ ...addFormInfo, img: event.target.files[0] })
-    }
-  }
-
-  const handleAddFormPreviewInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    if (event.target.files) {
-      setAddFormInfo({ ...addFormInfo, preview: event.target.files[0] })
-    }
+    formData.append('name', name as string)
+    formData.append('img', img as File)
+    formData.append('preview', preview as File)
+    const newMap: IMap = await createMap(formData)
+    setMaps([...maps, newMap])
+    nameInputRef.current!.value = ''
+    imgInputRef.current.value = ''
+    previewInputRef.current.value = ''
+    setIsAddMapFormOpened(false)
   }
 
   return (
     <div>
       <label htmlFor="name">
         Name
-        <input id='name' type="text" name='name' onChange={event => setAddFormInfo({ ...addFormInfo, name: event.target.value })} />
+        <input ref={nameInputRef} id='name' type="text" name='name' />
       </label>
       <label htmlFor="img">
         Img
-        <input id='img' type="file" name='img' onChange={handleAddFormImgInputChange} />
+        <input ref={imgInputRef} id='img' type="file" name='img' />
       </label>
       <label htmlFor="preview">
         Preview
-        <input id='preview' type="file" name='preview' onChange={handleAddFormPreviewInputChange} />
+        <input ref={previewInputRef} id='preview' type="file" name='preview' />
       </label>
       <button
         onClick={handleAddMapClick}

@@ -5,7 +5,7 @@ import AdminMapItem from '../../../components/AdminMapItem'
 
 const AdminMapList: React.FC = () => {
 
-  const { maps, setMaps, setIsAddMapFormOpened } = useAdminPageContext() as IAdminPageContext
+  const { maps, setMaps, setIsAddMapFormOpened, editedMap } = useAdminPageContext() as IAdminPageContext
 
   const handleOpenAddMapFormClick = (): void => {
     setIsAddMapFormOpened(true)
@@ -17,7 +17,7 @@ const AdminMapList: React.FC = () => {
       setMaps(maps)
     }
     setExistsMaps()
-  }, [setMaps])
+  }, [setMaps, editedMap])
 
   return (
     <div>
