@@ -5,7 +5,7 @@ import { IAdminPageContext, useAdminPageContext } from '../../../ui/contexts/Adm
 
 const AdminAddMapModal: React.FC = () => {
 
-  const { maps, setMaps, setIsAddMapFormOpened } = useAdminPageContext() as IAdminPageContext
+  const { maps, setMaps, isAddMapFormOpened, setIsAddMapFormOpened } = useAdminPageContext() as IAdminPageContext
   const nameInputRef = React.useRef<HTMLInputElement>(null)
   const imgInputRef = React.useRef<HTMLInputElement>(null)
   const previewInputRef = React.useRef<HTMLInputElement>(null)
@@ -30,6 +30,10 @@ const AdminAddMapModal: React.FC = () => {
     imgInputRef.current.value = ''
     previewInputRef.current.value = ''
     setIsAddMapFormOpened(false)
+  }
+
+  if (!isAddMapFormOpened) {
+    return <></>
   }
 
   return (

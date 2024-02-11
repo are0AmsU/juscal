@@ -1,9 +1,12 @@
 import React from 'react'
-import { CoordinatesType } from '../../ui/types';
+import { CoordinatesType, IMap } from '../../ui/types';
 
 export interface IMapProps {
-  children: React.ReactNode;
-  onMapClick?: ((coordinates: CoordinatesType) => void) | null;
+  info: IMap;
+  children?: React.ReactNode;
+  onMouseMove?: (currentCoordinates: CoordinatesType) => void
+  onMouseDown?: (coordinates: CoordinatesType, event: React.MouseEvent, isSpacePressed: boolean) => void
+  onMouseUp?: () => void;
 }
 
 export interface IOnMouseDownDataRef {
@@ -13,5 +16,7 @@ export interface IOnMouseDownDataRef {
 
 export enum MapCursors {
   GRAB = 'grab',
-  GRABBING = 'grabbing'
+  GRABBING = 'grabbing',
+  AUTO = 'auto',
+  DEFAULT = 'default'
 }

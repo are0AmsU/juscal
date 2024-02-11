@@ -64,6 +64,10 @@ const AdminEditMapModal: React.FC = () => {
     }
   }, [editedMap])
 
+  if (!editedMap) {
+    return <></>
+  }
+
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} onClose={handleModalClose}>
       <div>

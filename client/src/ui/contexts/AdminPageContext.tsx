@@ -17,7 +17,7 @@ export interface IAdminPageContext {
 
 export const AdminPageContext = React.createContext<IAdminPageContext | null>(null)
 
-export const useAdminPageContext = (): IAdminPageContext | null => {
+export const useAdminPageContext = (): IAdminPageContext => {
 
   return React.useContext(AdminPageContext) as IAdminPageContext
 

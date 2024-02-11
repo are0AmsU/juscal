@@ -1,11 +1,6 @@
 import { CoordinatesType } from '../../ui/types/index';
 import React from 'react'
 
-export interface IMapInfo {
-  img: string;
-  name: string;
-}
-
 export interface IMapPageProviderProps {
   children: React.ReactNode
 }

@@ -3,13 +3,19 @@ import styles from './style.module.css'
 import { IMapProps, IOnMouseDownDataRef, MapCursors } from './types'
 import { isArrayEqual } from '../../ui/helpers/isArrayEqual'
 import { CoordinatesType } from '../../ui/types'
+import { REACT_APP_API_URL } from '../../consts'
+import getClickCoordinatesByEvent from './helpers/getClickCoordinatesByEvent'
 
-const Map: React.FC<IMapProps> = ({ children, onMapClick }) => {
+const Map: React.FC<IMapProps> = ({ info, children, onMouseMove = null, onMouseDown = null, onMouseUp = null }) => {
 
   const [mapScale, setMapScale] = React.useState<number>(1)
   const [mapPosition, setMapPosition] = React.useState<CoordinatesType>([0, 0])
-  const [mapCursor, setMapCursor] = React.useState<MapCursors>(MapCursors.GRAB)
+  const [mapCursor, setMapCursor] = React.useState<MapCursors>(MapCursors.AUTO)
   const onMouseDownDataRef = React.useRef<IOnMouseDownDataRef>({ onMouseDownCoordinates: [0, 0], lastMapPositionCoordinates: [0, 0] })
+  const isMapMovingRef = React.useRef<boolean>(false)
+  const isTargetPressedRef = React.useRef<boolean>(false)
+  const isSpacePressedRef = React.useRef<boolean>(false)
+  const isSpaceFirstPressedRef = React.useRef<boolean>(true)
   const mapRef = React.useRef<HTMLDivElement | null>(null)
   const mapImgRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -25,7 +31,12 @@ const Map: React.FC<IMapProps> = ({ children, onMapClick }) => {
   }
 
   const handleMapMouseMove = (event: React.MouseEvent<HTMLDivElement>): void => {
-    if (event.buttons === 1) {
+    if (onMouseMove) {
+      const currentCordinates = getClickCoordinatesByEvent(event, mapScale, mapImgRef.current)
+      onMouseMove(currentCordinates)
+    }
+    if (event.buttons === 1 && isSpacePressedRef.current) {
+      isMapMovingRef.current = true
       if (isArrayEqual(onMouseDownDataRef.current.onMouseDownCoordinates, [0, 0])) {
         onMouseDownDataRef.current.onMouseDownCoordinates = [event.clientX, event.clientY]
         onMouseDownDataRef.current.lastMapPositionCoordinates = [mapPosition[0], mapPosition[1]]
@@ -35,62 +46,84 @@ const Map: React.FC<IMapProps> = ({ children, onMapClick }) => {
         x: onMouseDownDataRef.current.lastMapPositionCoordinates[0] + (event.clientX - onMouseDownDataRef.current.onMouseDownCoordinates[0]),
         y: onMouseDownDataRef.current.lastMapPositionCoordinates[1] + (event.clientY - onMouseDownDataRef.current.onMouseDownCoordinates[1])
       }
-      if (mapImgRef.current) {
-        if (Math.abs(newCoordinates.y) > mapImgRef.current.offsetHeight || Math.abs(newCoordinates.x) > mapImgRef.current.offsetWidth / 1.5) {
-          return
-        }
+      if (Math.abs(newCoordinates.y) > mapImgRef.current!.offsetHeight || Math.abs(newCoordinates.x) > mapImgRef.current!.offsetWidth / 1.5) {
+        return
       }
       setMapPosition([newCoordinates.x, newCoordinates.y])
       return
     }
     onMouseDownDataRef.current = { onMouseDownCoordinates: [0, 0], lastMapPositionCoordinates: [0, 0] }
-    setMapCursor(MapCursors.GRAB)
-  }
-
-  const handleMapImgClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!mapImgRef.current) {
+    if (isSpacePressedRef.current) {
+      setMapCursor(MapCursors.GRAB)
       return
     }
-    const rect = mapImgRef.current.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const distanceX = centerX - x
-    const distanceY = centerY - y
-    if (onMapClick) {
-      onMapClick([distanceX, distanceY])
-    }
-    console.log(`clicked position = ${distanceX}x ${distanceY}y`)
+    setMapCursor(MapCursors.AUTO)
   }
 
+  const handleMapMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
+    if (onMouseDown) {
+      const currentCoordinates = getClickCoordinatesByEvent(event, mapScale, mapImgRef.current)
+      onMouseDown(currentCoordinates, event, isSpacePressedRef.current)
+    }
+  }
+
+  const handleMapMouseUp = (event: React.MouseEvent<HTMLDivElement>): void => {
+    if (onMouseUp) {
+      onMouseUp()
+    }
+  }
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === ' ') {
+        isSpacePressedRef.current = true
+        if (isMapMovingRef.current) {
+          return
+        }
+        setMapCursor(MapCursors.GRAB)
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === ' ') {
+        setMapCursor(MapCursors.AUTO)
+        isSpacePressedRef.current = false
+        isMapMovingRef.current = false
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
   return (
-    <>
-      {/* {info ?
-        <div className={styles.wrapper}>
-          <div
-            ref={mapRef}
-            className={styles.mapContainer}
-            onMouseMove={handleMapMouseMove}
-            onWheel={handleMapWheel}
-          >
-            <div
-              onClick={handleMapImgClick}
-              ref={mapImgRef}
-              className={styles.mapImg}
-              style={{
-                cursor: mapCursor,
-                transform: `scale(${mapScale}) translate(${mapPosition[0] / mapScale}px, ${mapPosition[1] / mapScale}px)`,
-                backgroundImage: `url("${info.img}")`
-              }}
-            >
-              {children}
-            </div>
-          </div>
+    <div className={styles.wrapper}>
+      <div
+        ref={mapRef}
+        className={styles.mapContainer}
+        onMouseMove={handleMapMouseMove}
+        onWheel={handleMapWheel}
+        onMouseDown={handleMapMouseDown}
+        onMouseUp={handleMapMouseUp}
+      >
+        <div
+          ref={mapImgRef}
+          className={styles.mapImg}
+          style={{
+            cursor: mapCursor,
+            transform: `scale(${mapScale}) translate(${mapPosition[0] / mapScale}px, ${mapPosition[1] / mapScale}px)`,
+            backgroundImage: `url("${REACT_APP_API_URL + info.img.split('\\').join('/')}")`
+          }}
+        >
+          {children}
         </div>
-        :
-        <h1>Loading</h1>} */}
-    </>
+      </div>
+    </div>
   )
 }
 

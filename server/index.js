@@ -16,7 +16,6 @@ app.use('/static', express.static(path.dirname(fileURLToPath(import.meta.url)) +
 
 const start = async () => {
   try {
-    // await sequelize.sync()
     await sequelize.authenticate()
     app.listen(PORT, () => console.log('start server on port: ' + PORT))
   } catch (error) {

@@ -24,7 +24,6 @@ export enum GrenadesTypes {
 export interface IRoute {
   path: string;
   page: React.FC;
-  getPathWithParametr?: (parametr: string) => string;
 }
 
 export enum NadeTargetTypes {
@@ -34,5 +33,13 @@ export enum NadeTargetTypes {
 
 export interface INade {
   id: number;
-  name: string
+  name: string;
+}
+
+export interface ITarget {
+  id: number;
+  iconPath?: string;
+  type?: NadeTargetTypes;
+  coordinates: CoordinatesType;
+  isSelected: boolean;
 }

@@ -1,0 +1,20 @@
+.target {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  padding: 13px;
+  border: none;
+  border-radius: 50%;
+  background-color: #2c2b2b;
+}
+
+.targetSelected {
+  background-color: aqua;
+}
+
+.targetImg {
+  user-select: none;
+}

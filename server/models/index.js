@@ -40,7 +40,6 @@ export const TargetIcon = sequelize.define('target_icon', {
 
 export const TargetIconImg = sequelize.define('target_icon_img', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
   path: { type: DataTypes.STRING, unique: true, allowNull: false }
 })
 
@@ -64,6 +63,9 @@ TargetIcon.belongsTo(Target)
 
 TargetIconImg.hasMany(TargetIcon)
 TargetIcon.belongsTo(TargetIconImg)
+
+NadeType.hasMany(TargetIconImg)
+TargetIconImg.belongsTo(NadeType)
 
 export const models = {
   Map,

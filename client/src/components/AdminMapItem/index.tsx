@@ -28,7 +28,7 @@ const AdminMapItem: React.FC<IAdminMapItem> = ({ map }) => {
   }
 
   return (
-    <button
+    <div
       className={styles.item}
       onClick={handleClick}
     >
@@ -45,7 +45,7 @@ const AdminMapItem: React.FC<IAdminMapItem> = ({ map }) => {
       >
         Delete
       </button>
-    </button>
+    </div>
   )
 }
 

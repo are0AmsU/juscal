@@ -1,21 +1,18 @@
 import React from 'react'
 import AdminEditMapModal from '../../../modules/Admin/AdminEditMapModal'
-import { AdminPageContextProvider, IAdminPageContext, useAdminPageContext } from '../../../ui/contexts/AdminPageContext'
-import providerObserve from '../../../ui/helpers/providerObserve'
+import { AdminPageContextProvider } from '../../../ui/contexts/AdminPageContext'
 import AdminAddMapModal from '../../../modules/Admin/AdminAddMapModal'
 import AdminMapList from '../../../modules/Admin/AdminMapList'
 
-const AdminPage: React.FC = providerObserve(AdminPageContextProvider, () => {
-
-  const { editedMap, isAddMapFormOpened } = useAdminPageContext() as IAdminPageContext
+const AdminPage: React.FC = () => {
 
   return (
-    <>
+    <AdminPageContextProvider>
       <AdminMapList />
-      {isAddMapFormOpened && <AdminAddMapModal />}
-      {editedMap && <AdminEditMapModal />}
-    </>
+      <AdminAddMapModal />
+      <AdminEditMapModal />
+    </AdminPageContextProvider>
   )
-})
+}
 
 export default AdminPage
