@@ -14,7 +14,7 @@ export interface IMap {
   preview: string;
 }
 
-export enum GrenadesTypes {
+export enum TargetNadeTypes {
   HAE = 'hae',
   FLASH = 'flash',
   SMOKE = 'smoke',
@@ -26,7 +26,7 @@ export interface IRoute {
   page: React.FC;
 }
 
-export enum NadeTargetTypes {
+export enum TargetTypes {
   TO='to',
   FROM='from'
 }
@@ -39,7 +39,17 @@ export interface INade {
 export interface ITarget {
   id: number;
   iconPath?: string;
-  type?: NadeTargetTypes;
+  type: TargetTypes;
+  nadeType: TargetNadeTypes | null;
   coordinates: CoordinatesType;
   isSelected: boolean;
+}
+
+export enum CSSVariables {
+  HEADER_HIGHT='header-height'
+}
+
+export interface ICssVariable {
+  name: CSSVariables;
+  value: string;
 }

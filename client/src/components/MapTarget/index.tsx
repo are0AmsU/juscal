@@ -4,13 +4,13 @@ import flashIcon from './../../assets/nadesIcons/flashIcon.svg'
 import haeIcon from './../../assets/nadesIcons/haeIcon.svg'
 import smokeIcon from './../../assets/nadesIcons/smokeIcon.svg'
 import molotovIcon from './../../assets/nadesIcons/molotovIcon.svg'
-import { GrenadesTypes } from '../../ui/types'
+import { TargetNadeTypes } from '../../ui/types'
 
 const nadeIcons = {
-  [GrenadesTypes.FLASH]: flashIcon,
-  [GrenadesTypes.HAE]: haeIcon,
-  [GrenadesTypes.MOLOTOV]: molotovIcon,
-  [GrenadesTypes.SMOKE]: smokeIcon
+  [TargetNadeTypes.FLASH]: flashIcon,
+  [TargetNadeTypes.HAE]: haeIcon,
+  [TargetNadeTypes.MOLOTOV]: molotovIcon,
+  [TargetNadeTypes.SMOKE]: smokeIcon
 }
 
 const MapTarget: React.FC = () => {

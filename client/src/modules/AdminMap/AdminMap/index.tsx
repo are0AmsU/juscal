@@ -10,7 +10,7 @@ import Target from '../../../ui/components/Target/idnex'
 const AdminMap: React.FC = () => {
 
   const { name } = useParams() as IAdminMapPageParams
-  const { targets, setTargets, currentTarget, setCurrentTarget } = useAdminMapPageContext() as IAdminMapPageContext
+  const { targets, setTargets, currentTarget, setCurrentTarget, nadeTargets, setNadeTargets } = useAdminMapPageContext() as IAdminMapPageContext
   const [nades, setNades] = React.useState<INade[]>([])
   const [map, setMap] = React.useState<IMap | null>(null)
   const isTargetMovingRef = React.useRef<boolean>(false)
@@ -82,6 +82,7 @@ const AdminMap: React.FC = () => {
         <Target
           key={target.id}
           info={target}
+          isNadeTarget={nadeTargets.find(nadeTarget => nadeTarget.id === target.id) ? true : false}
           onMouseUp={(event) => handleTargetMouseUp(event, target)}
           onMouseDown={(event) => handleTargetMouseDown(event, target)}
         />)}

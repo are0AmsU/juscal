@@ -1,6 +1,10 @@
 import React from 'react'
 import { ITarget } from '../types'
 
+export interface IAdminMapFormInfo {
+  currentTarget: ITarget | null;
+}
+
 interface IAdminMapPageContextProps {
   children: React.ReactNode
 }
@@ -10,6 +14,8 @@ export interface IAdminMapPageContext {
   setTargets: (targetArray: ITarget[]) => void;
   currentTarget: ITarget | null;
   setCurrentTarget: (target: ITarget | null) => void;
+  nadeTargets: ITarget[];
+  setNadeTargets: (targetArray: ITarget[]) => void;
 }
 
 const AdminMapPageContext = React.createContext<IAdminMapPageContext | null>(null)
@@ -22,6 +28,7 @@ export const AdminMapPageContextProvider: React.FC<IAdminMapPageContextProps> = 
 
   const [targets, setTargets] = React.useState<ITarget[]>([])
   const [currentTarget, setCurrentTarget] = React.useState<ITarget | null>(null)
+  const [nadeTargets, setNadeTargets] = React.useState<ITarget[]>([])
 
   return (
     <AdminMapPageContext.Provider
@@ -29,7 +36,9 @@ export const AdminMapPageContextProvider: React.FC<IAdminMapPageContextProps> = 
         targets,
         setTargets,
         currentTarget,
-        setCurrentTarget
+        setCurrentTarget,
+        nadeTargets,
+        setNadeTargets
       }}
     >
       {children}
