@@ -5,6 +5,7 @@ import { isArrayEqual } from '../../ui/helpers/isArrayEqual'
 import { CoordinatesType } from '../../ui/types'
 import { REACT_APP_API_URL } from '../../consts'
 import getClickCoordinatesByEvent from './helpers/getClickCoordinatesByEvent'
+import { IUseSpacePressed, useSpacePressed } from '../../ui/hooks/useSpacePressed'
 
 const Map: React.FC<IMapProps> = ({ info, children, onMouseMove = null, onMouseDown = null, onMouseUp = null }) => {
 
@@ -14,10 +15,24 @@ const Map: React.FC<IMapProps> = ({ info, children, onMouseMove = null, onMouseD
   const onMouseDownDataRef = React.useRef<IOnMouseDownDataRef>({ onMouseDownCoordinates: [0, 0], lastMapPositionCoordinates: [0, 0] })
   const isMapMovingRef = React.useRef<boolean>(false)
   const isTargetPressedRef = React.useRef<boolean>(false)
-  const isSpacePressedRef = React.useRef<boolean>(false)
   const isSpaceFirstPressedRef = React.useRef<boolean>(true)
   const mapRef = React.useRef<HTMLDivElement | null>(null)
   const mapImgRef = React.useRef<HTMLDivElement | null>(null)
+
+  const onSpaceDown = () => {
+    if (isMapMovingRef.current) {
+      return
+    }
+    setMapCursor(MapCursors.GRAB)
+  }
+
+  const onSpaceUp = () => {
+    isSpacePressedRef.current = false
+    isMapMovingRef.current = false
+    setMapCursor(MapCursors.AUTO)
+  }
+
+  const isSpacePressedRef = useSpacePressed(onSpaceDown, onSpaceUp) as IUseSpacePressed
 
   const handleMapWheel = (event: React.WheelEvent<HTMLDivElement>): void => {
     if (event.deltaY < 0 && mapScale < 3) {
@@ -63,7 +78,7 @@ const Map: React.FC<IMapProps> = ({ info, children, onMouseMove = null, onMouseD
   const handleMapMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
     if (onMouseDown) {
       const currentCoordinates = getClickCoordinatesByEvent(event, mapScale, mapImgRef.current)
-      onMouseDown(currentCoordinates, event, isSpacePressedRef.current)
+      onMouseDown(currentCoordinates, event)
     }
   }
 
@@ -72,34 +87,6 @@ const Map: React.FC<IMapProps> = ({ info, children, onMouseMove = null, onMouseD
       onMouseUp()
     }
   }
-
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === ' ') {
-        isSpacePressedRef.current = true
-        if (isMapMovingRef.current) {
-          return
-        }
-        setMapCursor(MapCursors.GRAB)
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === ' ') {
-        setMapCursor(MapCursors.AUTO)
-        isSpacePressedRef.current = false
-        isMapMovingRef.current = false
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
 
   return (
     <div className={styles.wrapper}>

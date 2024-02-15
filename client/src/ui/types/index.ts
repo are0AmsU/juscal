@@ -34,6 +34,9 @@ export enum TargetTypes {
 export interface INade {
   id: number;
   name: string;
+  description: string;
+  targets: [ITarget, ITarget];
+  screenshots: File[];
 }
 
 export interface ITarget {

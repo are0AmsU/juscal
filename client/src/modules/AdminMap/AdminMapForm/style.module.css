@@ -3,3 +3,16 @@
   left: 0;
   z-index: 1;
 }
+
+.targetForm {
+  background-color: blue;
+}
+
+.nadeFormImgs {
+  display: flex;
+  align-items: center;
+}
+
+.nadeFormImg {
+  max-width: 100px;
+}

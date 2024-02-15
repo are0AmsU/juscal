@@ -6,6 +6,7 @@ import { CoordinatesType, IMap, INade, ITarget } from '../../../ui/types'
 import { getMapAndNadesByMapName } from '../../../http/adminMapApi'
 import { IAdminMapPageContext, useAdminMapPageContext } from '../../../ui/contexts/AdminMapPageContext'
 import Target from '../../../ui/components/Target/idnex'
+import { IUseSpacePressed, useSpacePressed } from '../../../ui/hooks/useSpacePressed'
 
 const AdminMap: React.FC = () => {
 
@@ -14,9 +15,10 @@ const AdminMap: React.FC = () => {
   const [nades, setNades] = React.useState<INade[]>([])
   const [map, setMap] = React.useState<IMap | null>(null)
   const isTargetMovingRef = React.useRef<boolean>(false)
-  const isSpacePressedRef = React.useRef<boolean>(false)
+  const isSpacePressedRef = useSpacePressed() as IUseSpacePressed
 
   const handleTargetMouseUp = (event: React.MouseEvent<HTMLButtonElement>, target: ITarget) => {
+    isTargetMovingRef.current = false
   }
 
   const handleTargetMouseDown = (event: React.MouseEvent<HTMLButtonElement>, target: ITarget) => {
@@ -37,6 +39,9 @@ const AdminMap: React.FC = () => {
   }
 
   const handleMapMouseMove = (curretCoordinates: CoordinatesType): void => {
+    if (isSpacePressedRef.current) {
+      return
+    }
     if (isTargetMovingRef.current) {
       const newTargets = [...targets]
       newTargets.forEach(trg => {
@@ -48,8 +53,7 @@ const AdminMap: React.FC = () => {
     }
   }
 
-  const handleMapMouseDown = (coordinates: CoordinatesType, event: React.MouseEvent, isSpacePressed: boolean): void => {
-    isSpacePressedRef.current = isSpacePressed
+  const handleMapMouseDown = (coordinates: CoordinatesType, event: React.MouseEvent): void => {
     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
       isTargetMovingRef.current = false
     }

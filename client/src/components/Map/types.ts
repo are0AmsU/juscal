@@ -5,7 +5,7 @@ export interface IMapProps {
   info: IMap;
   children?: React.ReactNode;
   onMouseMove?: (currentCoordinates: CoordinatesType) => void
-  onMouseDown?: (coordinates: CoordinatesType, event: React.MouseEvent, isSpacePressed: boolean) => void
+  onMouseDown?: (coordinates: CoordinatesType, event: React.MouseEvent) => void
   onMouseUp?: () => void;
 }
 
