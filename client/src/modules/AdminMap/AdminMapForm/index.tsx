@@ -102,7 +102,6 @@ const AdminMapForm: React.FC = () => {
     nadePhotos.forEach(nadePhoto => {
       screenshots.push(nadePhoto.file)
     })
-    console.log(name, description, fromTarget, toTarget, screenshots)
     if (description === '' || name === '') {
       return
     }

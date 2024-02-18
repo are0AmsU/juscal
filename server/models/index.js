@@ -19,6 +19,11 @@ export const NadeType = sequelize.define('nade_type', {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 })
 
+export const NadeImg = sequelize.define('nade_img', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  path: { type: DataTypes.STRING, allowNull: false }
+})
+
 export const Target = sequelize.define('target', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   coordinateX: { type: DataTypes.INTEGER, unique: true, allowNull: false },
@@ -49,6 +54,9 @@ Nade.belongsTo(Map)
 NadeType.hasMany(Nade)
 Nade.belongsTo(NadeType)
 
+Nade.hasMany(NadeImg)
+NadeImg.belongsTo(Nade)
+
 Nade.hasMany(NadeTarget)
 NadeTarget.belongsTo(Nade)
 
@@ -67,10 +75,30 @@ TargetIcon.belongsTo(TargetIconImg)
 NadeType.hasMany(TargetIconImg)
 TargetIconImg.belongsTo(NadeType)
 
+NadeType.bulkCreate([
+  { id: 1, name: 'smoke' },
+  { id: 2, name: 'flash' },
+  { id: 3, name: 'hae' },
+  { id: 4, name: 'molotov' }
+], { ignoreDuplicates: true })
+
+TargetType.bulkCreate([
+  { id: 1, name: 'from' },
+  { id: 2, name: 'to' }
+], { ignoreDuplicates: true })
+
+TargetIconImg.bulkCreate([
+  { id: 1, path: 'static\\SmokeIcon.svg', nadeTypeId: 1 },
+  { id: 2, path: 'static\\FlashIcon.svg', nadeTypeId: 2 },
+  { id: 3, path: 'static\\HaeIcon.svg', nadeTypeId: 3 },
+  { id: 4, path: 'static\\MolotovIcon.svg', nadeTypeId: 4 }
+], { ignoreDuplicates: true })
+
 export const models = {
   Map,
   Nade,
   NadeType,
+  NadeImg,
   NadeTarget,
   Target,
   TargetType,

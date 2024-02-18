@@ -1,5 +1,5 @@
 import { ApiError } from "../errors/ApiError.js"
-import { Map } from './../models/index.js'
+import { Map } from '../models/index.js'
 import * as fs from 'fs'
 
 class MapController {
