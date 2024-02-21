@@ -1,9 +1,12 @@
 import React from 'react'
 import styles from './style.module.css'
 import { ITargetProps } from './types'
-import { targetIcons } from '../../../consts'
+import { IGlobalContext, useGlobalContext } from '../../contexts/GlobalContext'
+import { REACT_APP_API_URL } from '../../../consts'
 
 const Target: React.FC<ITargetProps> = ({ info, isNadeTarget, onMouseUp, onMouseDown }) => {
+
+  const { nadeStore } = useGlobalContext() as IGlobalContext
 
   return (
     <button
@@ -12,7 +15,7 @@ const Target: React.FC<ITargetProps> = ({ info, isNadeTarget, onMouseUp, onMouse
         left: `calc(50% - ${info.coordinates[0]}px)`,
         top: `calc(50% - ${info.coordinates[1]}px)`,
         transform: `translate(-50%, -50%)`,
-        backgroundImage: info.nadeType ? `url(${targetIcons[info.nadeType]})` : 'none'
+        backgroundImage: info.iconPath ? `url(${REACT_APP_API_URL + info.iconPath})` : 'none'
       }}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}

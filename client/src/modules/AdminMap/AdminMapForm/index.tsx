@@ -1,5 +1,5 @@
 import React from 'react'
-import { CSSVariables, INade, ITarget, TargetNadeTypes, TargetTypes } from '../../../ui/types'
+import { CSSVariables, INade, ITarget, NadeTypes, TargetTypes } from '../../../ui/types'
 import { IAdminMapPageContext, useAdminMapPageContext } from '../../../ui/contexts/AdminMapPageContext'
 import generateRandomNumber from '../../../ui/helpers/generateRandomNumber'
 import Select from '../../../ui/components/Select/idnex'
@@ -14,7 +14,7 @@ import createFormDataFromObjectFields from '../../../ui/helpers/createFormDataFr
 
 const AdminMapForm: React.FC = () => {
 
-  const { cssVariables } = useGlobalContext() as IGlobalContext
+  const { cssVariables, nadeStore } = useGlobalContext() as IGlobalContext
   const { targets, setTargets, currentTarget, setCurrentTarget, nadeTargets, setNadeTargets } = useAdminMapPageContext() as IAdminMapPageContext
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const [nadePhotos, setNadePhotos] = React.useState<INadePhoto[]>([])
@@ -44,24 +44,26 @@ const AdminMapForm: React.FC = () => {
       const newTarget: ITarget = { ...currentTarget, type: optionValue as TargetTypes }
       if (newTarget.type === TargetTypes.FROM) {
         newTarget.nadeType = null
+        delete newTarget.iconPath
       } else {
-        newTarget.nadeType = TargetNadeTypes.SMOKE
+        newTarget.nadeType = nadeStore.nadeTypes.smoke!
+        newTarget.iconPath = nadeStore.targetIcons.smoke
       }
       setCurrentTarget(newTarget)
       setTargets([...targets.filter(target => target.id !== currentTarget.id), newTarget])
     }
   }
 
-  const setTargetNadeType = (nadeType: TargetNadeTypes) => {
+  const setTargetNadeType = (nadeType: NadeTypes) => {
     if (currentTarget) {
-      const newTarget: ITarget = { ...currentTarget, nadeType: nadeType }
+      const newTarget: ITarget = { ...currentTarget, nadeType: nadeType, iconPath: nadeStore.targetIcons[nadeType] }
       setCurrentTarget(newTarget)
       setTargets([...targets.filter(target => target.id !== currentTarget.id), newTarget])
     }
   }
 
   const handleTargetNadeTypeSelect = (optionValue: string) => {
-    setTargetNadeType(optionValue as TargetNadeTypes)
+    setTargetNadeType(optionValue as NadeTypes)
   }
 
   const handleAddTargetToFormClick = (): void => {
@@ -195,18 +197,18 @@ const AdminMapForm: React.FC = () => {
               <Select
                 selectedOption={{ value: currentTarget.type, label: currentTarget.type }}
                 onSelect={handleTargetTypeSelect}
-                options={Object.values(TargetTypes).map(value => { return { value: value as TargetTypes, label: value as TargetTypes } })}
+                options={Object.values(nadeStore.targetTypes).map(targetType => { return { value: targetType, label: targetType } })}
               />
               {currentTarget.type === TargetTypes.TO &&
                 <>
                   <p>Select Nade Type</p>
                   <Select
                     selectedOption={{
-                      value: currentTarget.nadeType ? currentTarget.nadeType as string : TargetNadeTypes.SMOKE,
-                      label: currentTarget.nadeType ? currentTarget.nadeType as string : TargetNadeTypes.SMOKE
+                      value: currentTarget.nadeType ? currentTarget.nadeType as string : NadeTypes.SMOKE,
+                      label: currentTarget.nadeType ? currentTarget.nadeType as string : NadeTypes.SMOKE
                     }}
                     onSelect={handleTargetNadeTypeSelect}
-                    options={Object.values(TargetNadeTypes).map(value => { return { value: value as TargetNadeTypes, label: value as TargetNadeTypes } })}
+                    options={Object.values(nadeStore.nadeTypes).map(nadeType => { return { value: nadeType, label: nadeType } })}
                   />
                 </>
               }

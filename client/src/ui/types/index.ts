@@ -14,7 +14,7 @@ export interface IMap {
   preview: string;
 }
 
-export enum TargetNadeTypes {
+export enum NadeTypes {
   HAE = 'hae',
   FLASH = 'flash',
   SMOKE = 'smoke',
@@ -27,8 +27,8 @@ export interface IRoute {
 }
 
 export enum TargetTypes {
-  TO='to',
-  FROM='from'
+  TO = 'to',
+  FROM = 'from'
 }
 
 export interface INade {
@@ -43,7 +43,7 @@ export interface ITarget {
   id: number;
   iconPath?: string;
   type: TargetTypes;
-  nadeType: TargetNadeTypes | null;
+  nadeType: NadeTypes | null;
   coordinates: CoordinatesType;
   isSelected: boolean;
 }
@@ -55,4 +55,21 @@ export enum CSSVariables {
 export interface ICssVariable {
   name: CSSVariables;
   value: string;
+}
+
+export interface ITargetIcon {
+  nadeType: NadeTypes;
+  path: string;
+}
+
+export interface INadeStore {
+  targetTypes: {
+    [key in TargetTypes]?: TargetTypes
+  };
+  nadeTypes: {
+    [key in NadeTypes]?: NadeTypes
+  };
+  targetIcons: {
+    [key in NadeTypes]?: string
+  };
 }

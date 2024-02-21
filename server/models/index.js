@@ -88,10 +88,10 @@ TargetType.bulkCreate([
 ], { ignoreDuplicates: true })
 
 TargetIconImg.bulkCreate([
-  { id: 1, path: 'static\\SmokeIcon.svg', nadeTypeId: 1 },
-  { id: 2, path: 'static\\FlashIcon.svg', nadeTypeId: 2 },
-  { id: 3, path: 'static\\HaeIcon.svg', nadeTypeId: 3 },
-  { id: 4, path: 'static\\MolotovIcon.svg', nadeTypeId: 4 }
+  { id: 1, path: 'static/SmokeIcon.svg', nadeTypeId: 1 },
+  { id: 2, path: 'static/FlashIcon.svg', nadeTypeId: 2 },
+  { id: 3, path: 'static/HaeIcon.svg', nadeTypeId: 3 },
+  { id: 4, path: 'static/MolotovIcon.svg', nadeTypeId: 4 }
 ], { ignoreDuplicates: true })
 
 export const models = {

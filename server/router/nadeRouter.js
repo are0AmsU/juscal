@@ -5,5 +5,6 @@ import { upload } from "../middlewares/multer.js";
 const router = new Router()
 
 router.post('/', upload.fields([{ name: 'screenshots', maxCount: 5 }]), NadeController.create)
+router.get('/types', NadeController.getNadeTypes)
 
 export default router

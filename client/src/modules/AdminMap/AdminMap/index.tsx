@@ -64,11 +64,9 @@ const AdminMap: React.FC = () => {
   }
 
   React.useEffect(() => {
-    const setMapAndNades = async () => {
-      const { map, nades } = await getMapAndNadesByMapName(name!)
-      setMap(map)
-    }
-    setMapAndNades()
+    getMapAndNadesByMapName(name!).then(data => {
+      setMap(data.map)
+    })
   }, [name])
 
   if (!map) {

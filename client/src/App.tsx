@@ -3,18 +3,23 @@ import { BrowserRouter } from 'react-router-dom'
 import Router from './components/Router';
 import Header from './components/Header';
 import MainLayout from './ui/components/Layouts/MainLayout';
-import { GlobalContextProvider } from './ui/contexts/GlobalContext';
+import { IGlobalContext, useGlobalContext } from './ui/contexts/GlobalContext';
+import { getNadeStore } from './http/nadeStoreApi';
 
 const App: React.FC = () => {
 
+  const { nadeStore, setNadeStore } = useGlobalContext() as IGlobalContext
+
+  React.useEffect(() => {
+    getNadeStore().then(data => setNadeStore(data))
+  }, [setNadeStore])
+
   return (
     <BrowserRouter>
-      <GlobalContextProvider>
-        <MainLayout>
-          <Header />
-          <Router />
-        </MainLayout>
-      </GlobalContextProvider>
+      <MainLayout>
+        <Header />
+        <Router />
+      </MainLayout>
     </BrowserRouter>
   );
 }
