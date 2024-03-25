@@ -7,9 +7,9 @@ import { IRoute } from "./ui/types";
 
 export const routes: IRoute[] = [
   { path: '/admin', page: AdminPage },
-  { path: '/admin/map/:name', page: AdminMapPage },
+  { path: '/admin/map/:mapId', page: AdminMapPage },
   { path: '/home', page: HomePage },
   { path: '/crosshair', page: CrosshairPage },
-  { path: '/map/:name', page: MapPage },
+  { path: '/map/:mapId', page: MapPage },
   { path: '*', page: HomePage },
 ]

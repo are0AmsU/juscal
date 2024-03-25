@@ -24,8 +24,10 @@ const AdminMapItem: React.FC<IAdminMapItem> = ({ map }) => {
   }
 
   const handleClick = (): void => {
-    navigate(ADMIN_MAP_PAGE_PATH + map.name)
+    navigate(ADMIN_MAP_PAGE_PATH + map.id)
   }
+
+  console.log(map)
 
   return (
     <div

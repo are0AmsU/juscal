@@ -8,7 +8,7 @@ import { getNadeStore } from './http/nadeStoreApi';
 
 const App: React.FC = () => {
 
-  const { nadeStore, setNadeStore } = useGlobalContext() as IGlobalContext
+  const { setNadeStore } = useGlobalContext() as IGlobalContext
 
   React.useEffect(() => {
     getNadeStore().then(data => setNadeStore(data))

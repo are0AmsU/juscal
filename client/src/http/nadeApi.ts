@@ -1,7 +1,8 @@
 import { $host } from '.';
+import { INade } from '../ui/types';
 
-export const createNade = (nade: FormData) => {
-  const data = $host.post('api/nade', nade)
+export const createNade = async (mapName: string, nade: FormData): Promise<INade> => {
+  const data = await $host.post('api/nade/' + mapName, nade) as INade
   return data
 }
 

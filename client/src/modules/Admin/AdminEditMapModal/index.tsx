@@ -3,7 +3,6 @@ import Modal from '../../../components/Modal'
 import { IMapInfoForm } from '../../../ui/types'
 import { IAdminPageContext, useAdminPageContext } from '../../../ui/contexts/AdminPageContext'
 import { deleteMapById, updateMapById } from '../../../http/mapApi'
-import createFormDataFromObjectFields from '../../../ui/helpers/createFormDataFromObjectFields'
 
 const AdminEditMapModal: React.FC = () => {
 
@@ -44,7 +43,10 @@ const AdminEditMapModal: React.FC = () => {
     if (!isChangedMapInfo) {
       return
     }
-    const formData = createFormDataFromObjectFields(newData)
+    const formData = new FormData()
+    formData.append('name', name as string)
+    formData.append('img', img as File)
+    formData.append('preview', preview as File)
     await updateMapById(id!, formData)
     setEditedMap(null)
     setIsOpen(false)

@@ -14,16 +14,16 @@ export interface IMap {
   preview: string;
 }
 
+export interface IRoute {
+  path: string;
+  page: React.FC;
+}
+
 export enum NadeTypes {
   HAE = 'hae',
   FLASH = 'flash',
   SMOKE = 'smoke',
   MOLOTOV = 'molotov'
-}
-
-export interface IRoute {
-  path: string;
-  page: React.FC;
 }
 
 export enum TargetTypes {
@@ -35,21 +35,23 @@ export interface INade {
   id: number;
   name: string;
   description: string;
-  targets: [ITarget, ITarget];
+  targetsIds: number[];
   screenshots: File[];
 }
 
 export interface ITarget {
   id: number;
-  iconPath?: string;
+  icon: string | null;
   type: TargetTypes;
   nadeType: NadeTypes | null;
   coordinates: CoordinatesType;
   isSelected: boolean;
+  isNadeTarget: boolean;
+  nadeIds: number[];
 }
 
 export enum CSSVariables {
-  HEADER_HIGHT='header-height'
+  HEADER_HIGHT = 'header-height'
 }
 
 export interface ICssVariable {
@@ -64,12 +66,12 @@ export interface ITargetIcon {
 
 export interface INadeStore {
   targetTypes: {
-    [key in TargetTypes]?: TargetTypes
+    [key in TargetTypes]?: { id: number, name: TargetTypes }
   };
   nadeTypes: {
-    [key in NadeTypes]?: NadeTypes
+    [key in NadeTypes]?: {id: number, name: NadeTypes}
   };
   targetIcons: {
-    [key in NadeTypes]?: string
+    [key in NadeTypes]?: { path: string, nadeTypeId: number }
   };
 }

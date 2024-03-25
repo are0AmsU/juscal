@@ -1,3 +1,3 @@
 export interface IAdminMapParams {
-  name: string;
+  mapId: string;
 }

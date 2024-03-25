@@ -1,18 +1,16 @@
 import React from 'react'
 import Map from '../../../components/Map'
 import { useParams } from 'react-router-dom'
-import { IAdminMapPageParams } from '../../../pages/Admin/AdminMapPage/types'
-import { CoordinatesType, IMap, INade, ITarget } from '../../../ui/types'
-import { getMapAndNadesByMapName } from '../../../http/adminMapApi'
+import { CoordinatesType, IMap, ITarget } from '../../../ui/types'
+import { getMapAndNadesAdnTargetsByMapId } from '../../../http/adminMapApi'
 import { IAdminMapPageContext, useAdminMapPageContext } from '../../../ui/contexts/AdminMapPageContext'
 import Target from '../../../ui/components/Target/idnex'
 import { IUseSpacePressed, useSpacePressed } from '../../../ui/hooks/useSpacePressed'
 
 const AdminMap: React.FC = () => {
 
-  const { name } = useParams() as IAdminMapPageParams
-  const { targets, setTargets, currentTarget, setCurrentTarget, nadeTargets, setNadeTargets } = useAdminMapPageContext() as IAdminMapPageContext
-  const [nades, setNades] = React.useState<INade[]>([])
+  const { mapId } = useParams()
+  const { targets, setTargets, nades, setNades } = useAdminMapPageContext() as IAdminMapPageContext
   const [map, setMap] = React.useState<IMap | null>(null)
   const isTargetMovingRef = React.useRef<boolean>(false)
   const isSpacePressedRef = useSpacePressed() as IUseSpacePressed
@@ -34,7 +32,6 @@ const AdminMap: React.FC = () => {
       }
       trg.isSelected = false
     })
-    setCurrentTarget(target)
     setTargets(newTargets)
   }
 
@@ -64,10 +61,12 @@ const AdminMap: React.FC = () => {
   }
 
   React.useEffect(() => {
-    getMapAndNadesByMapName(name!).then(data => {
+    getMapAndNadesAdnTargetsByMapId(mapId as string).then((data): void => {
       setMap(data.map)
+      setNades(data.nades)
+      setTargets(data.targets)
     })
-  }, [name])
+  }, [mapId, setNades, setTargets])
 
   if (!map) {
     return <h2>Loading</h2>
@@ -84,7 +83,6 @@ const AdminMap: React.FC = () => {
         <Target
           key={target.id}
           info={target}
-          isNadeTarget={nadeTargets.find(nadeTarget => nadeTarget.id === target.id) ? true : false}
           onMouseUp={(event) => handleTargetMouseUp(event, target)}
           onMouseDown={(event) => handleTargetMouseDown(event, target)}
         />)}
