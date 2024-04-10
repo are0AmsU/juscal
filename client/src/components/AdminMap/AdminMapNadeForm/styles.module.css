@@ -1,0 +1,8 @@
+.nadeFormImgs {
+  display: flex;
+  align-items: center;
+}
+
+.nadeFormImg {
+  max-width: 100px;
+}

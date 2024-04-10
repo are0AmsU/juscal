@@ -1,17 +1,27 @@
+import { CreateOptions } from "sequelize";
 export interface ITargetClient {
-  id: number;
+  id: CreateOptions<number>;
   icon: string | null;
   type: string;
   nadeType: string | null;
   coordinates: number[];
   isSelected: boolean;
   isNadeTarget: boolean;
-  nadeIds: number[];
+  nadeIds: CreateOptions<number>[];
 }
 
 export interface INadeClient {
-  id: number;
+  id: CreateOptions<number>;
+  name: string | null;
+  description: string | null;
+  targetsIds: CreateOptions<number>[];
+  photoPaths: string[];
+  isSelected: boolean;
+}
+
+export interface IMapClient {
+  id: CreateOptions<number>;
   name: string;
-  description: string;
-  targetsIds: number[];
+  img: string;
+  preview: string;
 }

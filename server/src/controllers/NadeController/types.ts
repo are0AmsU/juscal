@@ -1,15 +1,16 @@
-import { IMulterFile, ITargetRequest } from "../../types/index.js"
+import { INadeClient, ITargetClient } from "../../types/index.js";
 
 export interface INadeCreateRequest {
   params: {
-    mapId: number
-  },
+    mapId: number;
+  };
   body: {
-    name: string
-    description: string
-    targets: string | ITargetRequest[]
-  },
-  files: {
-    screenshots: IMulterFile[]
-  }
+    nade: INadeClient;
+  };
+}
+
+export interface IClientNadeAndTargets {
+  nade: INadeClient;
+  fromNadeTarget: ITargetClient;
+  toNadeTarget: ITargetClient;
 }

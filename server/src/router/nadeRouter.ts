@@ -1,9 +1,8 @@
 import { Router } from "express";
 import NadeController from "../controllers/NadeController/index.js";
-import { upload } from "../middlewares/multer.js";
 
-const router = Router()
+const router = Router();
 
-router.post('/:mapId', upload.fields([{ name: 'screenshots', maxCount: 5 }]), NadeController.create)
+router.post("/:mapId", NadeController.create as any);
 
-export default router
+export default router;

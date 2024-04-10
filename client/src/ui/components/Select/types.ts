@@ -7,4 +7,5 @@ export interface ISelectProps {
   selectedOption: IOption;
   options: IOption[];
   onSelect: (optionValue: any) => void;
+  onOpen?: () => void | boolean;
 }

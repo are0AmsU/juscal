@@ -11,13 +11,17 @@ const PORT = 5000;
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 app.use("/api", router);
-app.use("/src/static", express.static(path.dirname(fileURLToPath(import.meta.url)) + "/static"));
+app.use(
+  "/src/static",
+  express.static(path.dirname(fileURLToPath(import.meta.url)) + "/static")
+);
 
 const start = async () => {
   try {
     await sequelize.authenticate();
-    // await sequelize.sync({ force: true })
+    // await sequelize.sync({ alter: true });
     app.listen(PORT, () => console.log("start server on port: " + PORT));
   } catch (error) {
     console.log(error);

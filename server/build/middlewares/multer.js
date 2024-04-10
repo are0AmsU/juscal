@@ -2,7 +2,7 @@ import multer from 'multer';
 import * as uuid from 'uuid';
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'static');
+        cb(null, 'src/static');
     },
     filename: (req, file, cb) => {
         const filename = uuid.v4() + '.' + file.originalname.split('.')[1];

@@ -11,9 +11,9 @@ interface IAdminMapPageContextProps {
 
 export interface IAdminMapPageContext {
   targets: ITarget[];
-  setTargets: (targetArray: ITarget[]) => void;
+  setTargets: React.Dispatch<React.SetStateAction<ITarget[]>>;
   nades: INade[];
-  setNades: (nades: INade[]) => void;
+  setNades: React.Dispatch<React.SetStateAction<INade[]>>;
 }
 
 const AdminMapPageContext = React.createContext<IAdminMapPageContext | null>(null)

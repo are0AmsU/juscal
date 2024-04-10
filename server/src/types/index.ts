@@ -1,60 +1,91 @@
-import { Model, InferAttributes, InferCreationAttributes, CreateOptions } from "sequelize"
+import {
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+  CreateOptions,
+  ForeignKey,
+} from "sequelize";
 
-export * from './client.js'
+export * from "./client.js";
 
 export interface IMulterFile {
-  path: string
+  path: string;
 }
 
-export interface IMap {
-  id?: CreateOptions<number>
-  name: string
-  img: string
-  preview: string
+interface ITargetType {
+  id?: CreateOptions<number>;
+  name: string;
 }
 
-export interface INade {
-  id?: CreateOptions<number>
-  name: string
-  description: string
-  mapId?: CreateOptions<number>
-  nadeTypeId?: CreateOptions<number>
+export interface IMapModel
+  extends Model<
+    InferAttributes<IMapModel>,
+    InferCreationAttributes<IMapModel>
+  > {
+  id?: CreateOptions<number>;
+  name: string;
+  img: string;
+  preview: string;
+  description: string;
 }
 
-export interface INadeType {
-  id?: CreateOptions<number>
-  name: string
+export interface INadeModel
+  extends Model<
+    InferAttributes<INadeModel>,
+    InferCreationAttributes<INadeModel>
+  > {
+  id?: CreateOptions<number>;
+  name: string | null;
+  description: string | null;
+  mapId?: ForeignKey<number>;
 }
 
-export interface INadeImg {
-  id?: CreateOptions<number>
-  path: string
-  nadeId?: CreateOptions<number>
+export interface INadeTypeModel
+  extends Model<
+    InferAttributes<INadeTypeModel>,
+    InferCreationAttributes<INadeTypeModel>
+  > {
+  id?: CreateOptions<number>;
+  name: string;
+  icon: string;
 }
 
-export interface ITarget {
-  id?: CreateOptions<number>
-  coordinateX: number
-  coordinateY: number
-  targetTypeId?: CreateOptions<number>
-  mapId?: CreateOptions<number>
+export interface INadeImgModel
+  extends Model<
+    InferAttributes<INadeImgModel>,
+    InferCreationAttributes<INadeImgModel>
+  > {
+  id?: CreateOptions<number>;
+  path: string;
+  nadeId?: ForeignKey<number>;
 }
 
-export interface ITargetType {
-  id?: CreateOptions<number>
-  name: string
+export interface ITargetModel
+  extends Model<
+    InferAttributes<ITargetModel>,
+    InferCreationAttributes<ITargetModel>
+  > {
+  id?: CreateOptions<number>;
+  coordinateX: number;
+  coordinateY: number;
+  targetTypeId?: ForeignKey<number>;
+  mapId?: ForeignKey<number>;
+  target_type?: ITargetType;
 }
 
-export interface INadeTarget {
-  id?: CreateOptions<number>
-  nadeId?: CreateOptions<number>
-  targetId?: CreateOptions<number>
-}
+export interface ITargetTypeModel
+  extends ITargetType,
+    Model<
+      InferAttributes<ITargetTypeModel>,
+      InferCreationAttributes<ITargetTypeModel>
+    > {}
 
-export interface IMapModel extends IMap, Model<InferAttributes<IMapModel>, InferCreationAttributes<IMapModel>> {}
-export interface INadeModel extends INade, Model<InferAttributes<INadeModel>, InferCreationAttributes<INadeModel>> {}
-export interface INadeTypeModel extends INadeType, Model<InferAttributes<INadeTypeModel>, InferCreationAttributes<INadeTypeModel>> {}
-export interface INadeImgModel extends INadeImg, Model<InferAttributes<INadeImgModel>, InferCreationAttributes<INadeImgModel>> {}
-export interface ITargetModel extends ITarget, Model<InferAttributes<ITargetModel>, InferCreationAttributes<ITargetModel>> {}
-export interface ITargetTypeModel extends ITargetType, Model<InferAttributes<ITargetTypeModel>, InferCreationAttributes<ITargetTypeModel>> {}
-export interface INadeTargetModel extends INadeTarget, Model<InferAttributes<INadeTargetModel>, InferCreationAttributes<INadeTargetModel>> {}
+export interface INadeTargetModel
+  extends Model<
+    InferAttributes<INadeTargetModel>,
+    InferCreationAttributes<INadeTargetModel>
+  > {
+  id?: CreateOptions<number>;
+  nadeId?: ForeignKey<number>;
+  targetId?: ForeignKey<number>;
+}

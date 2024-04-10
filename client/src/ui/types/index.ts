@@ -1,4 +1,4 @@
-export type CoordinatesType = [number, number]
+export type CoordinatesType = [number, number];
 
 export interface IMapInfoForm {
   id?: number;
@@ -20,23 +20,24 @@ export interface IRoute {
 }
 
 export enum NadeTypes {
-  HAE = 'hae',
-  FLASH = 'flash',
-  SMOKE = 'smoke',
-  MOLOTOV = 'molotov'
+  HAE = "hae",
+  FLASH = "flash",
+  SMOKE = "smoke",
+  MOLOTOV = "molotov",
 }
 
 export enum TargetTypes {
-  TO = 'to',
-  FROM = 'from'
+  TO = "to",
+  FROM = "from",
 }
 
 export interface INade {
   id: number;
-  name: string;
-  description: string;
+  name: string | null;
+  description: string | null;
   targetsIds: number[];
-  screenshots: File[];
+  photoPaths: string[];
+  isSelected: boolean;
 }
 
 export interface ITarget {
@@ -51,7 +52,7 @@ export interface ITarget {
 }
 
 export enum CSSVariables {
-  HEADER_HIGHT = 'header-height'
+  HEADER_HIGHT = "header-height",
 }
 
 export interface ICssVariable {
@@ -66,12 +67,14 @@ export interface ITargetIcon {
 
 export interface INadeStore {
   targetTypes: {
-    [key in TargetTypes]?: { id: number, name: TargetTypes }
+    [key in TargetTypes]?: { id: number; name: TargetTypes };
   };
   nadeTypes: {
-    [key in NadeTypes]?: {id: number, name: NadeTypes}
+    [key in NadeTypes]?: { id: number; name: NadeTypes };
   };
   targetIcons: {
-    [key in NadeTypes]?: { path: string, nadeTypeId: number }
+    [key in NadeTypes]?: { path: string; nadeTypeId: number };
   };
 }
+
+export type NotSavedEntitiesIdsType = { nades: number[]; targets: number[] };
