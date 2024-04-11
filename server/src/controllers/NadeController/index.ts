@@ -1,9 +1,8 @@
 import {
   Nade,
   Target,
-  NadeType,
-  NadeImg,
   TargetType,
+  NadeImg,
   NadeTarget,
 } from "./../../models/index.js";
 import { Response, response } from "express";

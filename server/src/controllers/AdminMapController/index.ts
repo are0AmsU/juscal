@@ -2,7 +2,6 @@ import { Response } from "express";
 import {
   Map,
   Nade,
-  NadeType,
   TargetType,
   Target,
   NadeImg,
@@ -22,9 +21,6 @@ class AdminMapController {
   ) {
     try {
       const { mapId } = req.params;
-      const targetTypes = (await TargetType.findAll()).map(
-        (data) => data.dataValues
-      );
       const map: IMapClient = await Map.findOne({ where: { id: mapId } })
         .then((map) => map?.dataValues)
         .then((dataMap) => ({
@@ -46,7 +42,6 @@ class AdminMapController {
       const targets = (
         await Target.findAll({
           where: { mapId },
-          include: [{ model: TargetType }],
         })
       ).map((target) => target.dataValues);
       // .map(target => ({ id: target.id, icon: null, type: target.target_type?.name  }));

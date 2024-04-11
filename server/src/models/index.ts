@@ -11,19 +11,17 @@ import {
   INadeImgModel,
   INadeModel,
   INadeTargetModel,
-  INadeTypeModel,
-  ITargetModel,
   ITargetTypeModel,
+  ITargetModel,
 } from "../types/index.js";
 
 const Map = sequelize.define<IMapModel>(
   "map",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING, unique: true, allowNull: false },
-    img: { type: DataTypes.STRING, unique: true, allowNull: false },
-    preview: { type: DataTypes.STRING, unique: true, allowNull: false },
-    description: { type: DataTypes.STRING, unique: false, allowNull: true },
+    name: { type: DataTypes.STRING, unique: false, allowNull: false },
+    img: { type: DataTypes.STRING, unique: false, allowNull: false },
+    preview: { type: DataTypes.STRING, unique: false, allowNull: false },
   },
   { tableName: "maps" }
 );
@@ -38,14 +36,14 @@ const Nade = sequelize.define<INadeModel>(
   { tableName: "nades" }
 );
 
-const NadeType = sequelize.define<INadeTypeModel>(
-  "nade_type",
+const TargetType = sequelize.define<ITargetTypeModel>(
+  "target_type",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, unique: true, allowNull: false },
     icon: { type: DataTypes.STRING, unique: true, allowNull: false },
   },
-  { tableName: "nade_types" }
+  { tableName: "target_types" }
 );
 
 const NadeImg = sequelize.define<INadeImgModel>(
@@ -67,15 +65,6 @@ const Target = sequelize.define<ITargetModel>(
   { tableName: "targets" }
 );
 
-const TargetType = sequelize.define<ITargetTypeModel>(
-  "target_type",
-  {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING, unique: true, allowNull: false },
-  },
-  { tableName: "target_types" }
-);
-
 const NadeTarget = sequelize.define<INadeTargetModel>(
   "nade_target",
   {
@@ -90,19 +79,16 @@ Nade.belongsTo(Map);
 Map.hasMany(Target);
 Target.belongsTo(Map);
 
-NadeType.hasMany(Nade);
-Nade.belongsTo(NadeType);
+TargetType.hasMany(Target);
+Target.belongsTo(TargetType);
 
 Nade.hasMany(NadeImg);
 NadeImg.belongsTo(Nade);
 
-TargetType.hasMany(Target);
-Target.belongsTo(TargetType);
-
 Nade.belongsToMany(Target, { through: NadeTarget });
 Target.belongsToMany(Nade, { through: NadeTarget });
 
-NadeType.bulkCreate(
+TargetType.bulkCreate(
   [
     {
       id: 1 as CreateOptions<number>,
@@ -128,12 +114,4 @@ NadeType.bulkCreate(
   { ignoreDuplicates: true }
 );
 
-TargetType.bulkCreate(
-  [
-    { id: 1 as CreateOptions<number>, name: "from" },
-    { id: 2 as CreateOptions<number>, name: "to" },
-  ],
-  { ignoreDuplicates: true }
-);
-
-export { Map, Nade, NadeType, NadeImg, NadeTarget, Target, TargetType };
+export { Map, Nade, TargetType, NadeImg, NadeTarget, Target };

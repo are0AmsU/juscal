@@ -26,7 +26,6 @@ export interface IMapModel
   name: string;
   img: string;
   preview: string;
-  description: string;
 }
 
 export interface INadeModel
@@ -40,10 +39,10 @@ export interface INadeModel
   mapId?: ForeignKey<number>;
 }
 
-export interface INadeTypeModel
+export interface ITargetTypeModel
   extends Model<
-    InferAttributes<INadeTypeModel>,
-    InferCreationAttributes<INadeTypeModel>
+    InferAttributes<ITargetTypeModel>,
+    InferCreationAttributes<ITargetTypeModel>
   > {
   id?: CreateOptions<number>;
   name: string;
@@ -68,17 +67,9 @@ export interface ITargetModel
   id?: CreateOptions<number>;
   coordinateX: number;
   coordinateY: number;
-  targetTypeId?: ForeignKey<number>;
   mapId?: ForeignKey<number>;
   target_type?: ITargetType;
 }
-
-export interface ITargetTypeModel
-  extends ITargetType,
-    Model<
-      InferAttributes<ITargetTypeModel>,
-      InferCreationAttributes<ITargetTypeModel>
-    > {}
 
 export interface INadeTargetModel
   extends Model<

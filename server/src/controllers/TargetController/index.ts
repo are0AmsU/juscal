@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { ITargetCreateRequest, ITargetDeleteByIdRequest } from "./types.js";
-import { NadeType, Target, TargetType } from "../../models/index.js";
+import { TargetType, Target } from "../../models/index.js";
 import { CreateOptions } from "sequelize";
 import { ITargetClient } from "../../types/index.js";
 
@@ -9,16 +9,12 @@ class TargetController {
     try {
       const { mapId } = req.params;
       const { target } = req.body;
-      const fromTargetIconPath = await NadeType.findOne({
+      const fromTargetIconPath = await TargetType.findOne({
         where: { name: target.type },
       }).then((data) => data?.dataValues.icon);
-      const targetTypeId = await TargetType.findOne({
-        where: { name: target.type },
-      }).then((data) => data?.dataValues.id as number);
       const clientTarget: ITargetClient = await Target.create({
         coordinateX: target.coordinates[0],
         coordinateY: target.coordinates[1],
-        targetTypeId,
         mapId,
       })
         .then((data) => data.dataValues)
