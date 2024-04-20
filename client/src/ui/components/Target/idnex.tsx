@@ -2,15 +2,18 @@ import React from "react";
 import styles from "./style.module.css";
 import { ITargetProps } from "./types";
 
-const Target: React.FC<ITargetProps> = ({ info, onMouseUp, onMouseDown }) => {
-  console.log(info);
-
+const Target: React.FC<ITargetProps> = ({
+  info,
+  isFormCurrentNade,
+  onMouseUp,
+  onMouseDown,
+}) => {
   return (
     <button
       className={
         styles.target +
         (info.isSelected ? " " + styles.targetSelected : "") +
-        (info.isNadeTarget ? " " + styles.targetNade : "")
+        (isFormCurrentNade ? " " + styles.targetNade : "")
       }
       style={{
         left: `calc(50% - ${info.coordinates[0]}px)`,

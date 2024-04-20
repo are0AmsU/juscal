@@ -8,8 +8,6 @@ const Select: React.FC<ISelectProps> = ({
   onOpen,
 }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const [currentOption, setCurrentOption] =
-    React.useState<IOption>(selectedOption);
 
   const handleOpenClick = (): void => {
     if (onOpen) {
@@ -23,26 +21,23 @@ const Select: React.FC<ISelectProps> = ({
 
   const handleOptionClick = (optionValue: IOption) => {
     onSelect(optionValue.value);
-    setCurrentOption(optionValue);
     setIsOpen(false);
   };
 
-  React.useEffect(() => {
-    setCurrentOption(selectedOption);
-  }, [selectedOption]);
-
   return (
     <div>
-      <button onClick={handleOpenClick}>{currentOption.value}</button>
+      <button onClick={handleOpenClick}>{selectedOption.label}</button>
       {isOpen && (
         <ul>
-          {options.map((option) => (
-            <li key={option.value}>
-              <button onClick={() => handleOptionClick(option)}>
-                {option.label}
-              </button>
-            </li>
-          ))}
+          {options
+            .filter((option) => option.label !== selectedOption.label)
+            .map((option) => (
+              <li key={option.label}>
+                <button onClick={() => handleOptionClick(option)}>
+                  {option.label}
+                </button>
+              </li>
+            ))}
         </ul>
       )}
     </div>

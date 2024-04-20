@@ -1,12 +1,12 @@
-import React from 'react'
-import { INade, ITarget } from '../types'
+import React from "react";
+import { INade, ITarget } from "../types";
 
 export interface IAdminMapFormInfo {
   currentTarget: ITarget | null;
 }
 
 interface IAdminMapPageContextProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export interface IAdminMapPageContext {
@@ -16,16 +16,19 @@ export interface IAdminMapPageContext {
   setNades: React.Dispatch<React.SetStateAction<INade[]>>;
 }
 
-const AdminMapPageContext = React.createContext<IAdminMapPageContext | null>(null)
+const AdminMapPageContext = React.createContext<IAdminMapPageContext | null>(
+  null
+);
 
 export const useAdminMapPageContext = (): IAdminMapPageContext => {
-  return React.useContext(AdminMapPageContext) as IAdminMapPageContext
-}
+  return React.useContext(AdminMapPageContext) as IAdminMapPageContext;
+};
 
-export const AdminMapPageContextProvider: React.FC<IAdminMapPageContextProps> = ({ children }) => {
-
-  const [targets, setTargets] = React.useState<ITarget[]>([])
-  const [nades, setNades] = React.useState<INade[]>([])
+export const AdminMapPageContextProvider: React.FC<
+  IAdminMapPageContextProps
+> = ({ children }) => {
+  const [targets, setTargets] = React.useState<ITarget[]>([]);
+  const [nades, setNades] = React.useState<INade[]>([]);
 
   return (
     <AdminMapPageContext.Provider
@@ -33,10 +36,10 @@ export const AdminMapPageContextProvider: React.FC<IAdminMapPageContextProps> = 
         targets,
         setTargets,
         nades,
-        setNades
+        setNades,
       }}
     >
       {children}
     </AdminMapPageContext.Provider>
-  )
-}
+  );
+};

@@ -1,16 +1,20 @@
-import React from 'react'
-import AdminMap from '../../../modules/AdminMap/AdminMap'
-import { AdminMapPageContextProvider } from '../../../ui/contexts/AdminMapPageContext'
-import AdminMapAddNadeForm from '../../../modules/AdminMap/AdminMapForm'
+import React from "react";
+import AdminMap from "../../../modules/AdminMap/AdminMap";
+import { AdminMapPageContextProvider } from "../../../ui/contexts/AdminMapPageContext";
+import AdminMapForm from "../../../modules/AdminMap/AdminMapForm";
+import AdminMapNadeList from "../../../modules/AdminMap/AdminMapNadeList/idnex";
+import { AdminMapFormContextProvider } from "../../../ui/contexts/AdminMapFormContext";
 
 const AdminMapPage: React.FC = () => {
-
   return (
     <AdminMapPageContextProvider>
-      <AdminMapAddNadeForm />
+      <AdminMapFormContextProvider>
+        <AdminMapForm />
+        <AdminMapNadeList />
+      </AdminMapFormContextProvider>
       <AdminMap />
     </AdminMapPageContextProvider>
-  )
-}
+  );
+};
 
-export default AdminMapPage
+export default AdminMapPage;

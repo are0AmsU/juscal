@@ -39,12 +39,21 @@ class AdminMapController {
           photoPaths: [],
           isSelected: false,
         }));
-      const targets = (
+      const targets: ITargetClient[] = (
         await Target.findAll({
           where: { mapId },
         })
-      ).map((target) => target.dataValues);
-      // .map(target => ({ id: target.id, icon: null, type: target.target_type?.name  }));
+      )
+        .map((target) => target.dataValues)
+        .map((target) => ({
+          id: target.id!,
+          icon: null,
+          type: target.target_type?.name || null,
+          coordinates: [target.coordinateX, target.coordinateY],
+          isSelected: false,
+          isNadeTarget: false,
+          nadeIds: [],
+        }));
       res.json({ map, nades, targets });
     } catch (error) {
       console.log(error);

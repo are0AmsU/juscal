@@ -9,6 +9,12 @@ export interface INadeCreateRequest {
   };
 }
 
+export interface INadeDeleteByIdRequest {
+  params: {
+    nadeId: number;
+  };
+}
+
 export interface IClientNadeAndTargets {
   nade: INadeClient;
   fromNadeTarget: ITargetClient;

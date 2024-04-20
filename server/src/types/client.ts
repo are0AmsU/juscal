@@ -2,8 +2,7 @@ import { CreateOptions } from "sequelize";
 export interface ITargetClient {
   id: CreateOptions<number>;
   icon: string | null;
-  type: string;
-  nadeType: string | null;
+  type: string | null;
   coordinates: number[];
   isSelected: boolean;
   isNadeTarget: boolean;

@@ -9,3 +9,9 @@ body {
 img {
   max-width: 100%;
 }
+
+.wrapper {
+  display: flex;
+  position: relative;
+  flex: 1 1 auto;
+}

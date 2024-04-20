@@ -18,3 +18,8 @@ export const updateNadeById = async (nadeId: number, nadeData: FormData) => {
   const { data } = await $host.put(`api/nade/:id`);
   return data;
 };
+
+export const deleteNadeById = async (nadeId: number) => {
+  const { data } = await $host.delete(`api/nade/${nadeId}`);
+  return data;
+};

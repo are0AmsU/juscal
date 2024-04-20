@@ -1,0 +1,10 @@
+.nadeLine {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-color: #2c2b2b;
+}
+
+.selected {
+  background-color: red;
+}

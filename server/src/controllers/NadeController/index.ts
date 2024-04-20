@@ -7,7 +7,7 @@ import {
 } from "./../../models/index.js";
 import { Response, response } from "express";
 import { INadeClient, ITargetClient } from "../../types/index.js";
-import { INadeCreateRequest } from "./types.js";
+import { INadeCreateRequest, INadeDeleteByIdRequest } from "./types.js";
 import { CreateOptions, ForeignKey } from "sequelize";
 
 class NadeController {
@@ -25,6 +25,16 @@ class NadeController {
         id: dataNade.id!,
       };
       res.json(clientNade);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async deleteById(req: INadeDeleteByIdRequest, res: Response) {
+    try {
+      const { nadeId } = req.params;
+      await Nade.destroy({ where: { id: nadeId } });
+      res.json(200);
     } catch (error) {
       console.log(error);
     }

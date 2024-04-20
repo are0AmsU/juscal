@@ -19,23 +19,19 @@ export interface IRoute {
   page: React.FC;
 }
 
-export enum NadeTypes {
+export enum TargetTypes {
   HAE = "hae",
   FLASH = "flash",
   SMOKE = "smoke",
   MOLOTOV = "molotov",
 }
 
-export enum TargetTypes {
-  TO = "to",
-  FROM = "from",
-}
-
 export interface INade {
   id: number;
   name: string | null;
   description: string | null;
-  targetsIds: number[];
+  fromTargetId: number | null;
+  toTargetId: number | null;
   photoPaths: string[];
   isSelected: boolean;
 }
@@ -43,12 +39,9 @@ export interface INade {
 export interface ITarget {
   id: number;
   icon: string | null;
-  type: TargetTypes;
-  nadeType: NadeTypes | null;
+  type: TargetTypes | null;
   coordinates: CoordinatesType;
   isSelected: boolean;
-  isNadeTarget: boolean;
-  nadeIds: number[];
 }
 
 export enum CSSVariables {
@@ -61,7 +54,7 @@ export interface ICssVariable {
 }
 
 export interface ITargetIcon {
-  nadeType: NadeTypes;
+  targetType: TargetTypes;
   path: string;
 }
 
@@ -70,10 +63,10 @@ export interface INadeStore {
     [key in TargetTypes]?: { id: number; name: TargetTypes };
   };
   nadeTypes: {
-    [key in NadeTypes]?: { id: number; name: NadeTypes };
+    [key in TargetTypes]?: { id: number; name: TargetTypes };
   };
   targetIcons: {
-    [key in NadeTypes]?: { path: string; nadeTypeId: number };
+    [key in TargetTypes]?: { path: string; nadeTypeId: number };
   };
 }
 

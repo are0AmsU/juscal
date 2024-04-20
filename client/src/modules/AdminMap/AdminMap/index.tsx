@@ -1,7 +1,7 @@
 import React from "react";
 import Map from "../../../components/Map";
 import { useParams } from "react-router-dom";
-import { CoordinatesType, IMap, ITarget } from "../../../ui/types";
+import { CoordinatesType, IMap, INade, ITarget } from "../../../ui/types";
 import { getMapAndNadesAdnTargetsByMapId } from "../../../http/adminMapApi";
 import {
   IAdminMapPageContext,
@@ -12,6 +12,8 @@ import {
   IUseSpacePressed,
   useSpacePressed,
 } from "../../../ui/hooks/useSpacePressed";
+import styles from "./style.module.css";
+import NadeLine from "../../../ui/components/NadeLine";
 
 const AdminMap: React.FC = () => {
   const { mapId } = useParams();
@@ -20,6 +22,12 @@ const AdminMap: React.FC = () => {
   const [map, setMap] = React.useState<IMap | null>(null);
   const isTargetMovingRef = React.useRef<boolean>(false);
   const isSpacePressedRef = useSpacePressed() as IUseSpacePressed;
+  const currentNade = nades.find((nade) => nade.isSelected) || null;
+  const currentTarget = targets.find((target) => target.isSelected) || null;
+  const currentFromNadeTarget =
+    targets.find((target) => target.id === currentNade?.fromTargetId) || null;
+  const currentToNadeTarget =
+    targets.find((target) => target.id === currentNade?.toTargetId) || null;
 
   const handleTargetMouseUp = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -47,18 +55,13 @@ const AdminMap: React.FC = () => {
     setTargets(newTargets);
   };
 
-  const handleMapMouseMove = (curretCoordinates: CoordinatesType): void => {
+  const handleMapMouseMove = (currentCoordinates: CoordinatesType): void => {
     if (isSpacePressedRef.current) {
       return;
     }
     if (isTargetMovingRef.current) {
-      const newTargets = [...targets];
-      newTargets.forEach((trg) => {
-        if (trg.isSelected) {
-          trg.coordinates = curretCoordinates;
-        }
-      });
-      setTargets(newTargets);
+      currentTarget!.coordinates = currentCoordinates;
+      setTargets(targets.slice());
     }
   };
 
@@ -75,14 +78,25 @@ const AdminMap: React.FC = () => {
     isTargetMovingRef.current = false;
   };
 
+  const handleNadeLineClick = (nade: INade) => {
+    nades.forEach((nd) => (nd.isSelected = false));
+    nade.isSelected = true;
+    setNades(nades.slice());
+  };
+
+  console.log(nades, targets);
+
   React.useEffect(() => {
     getMapAndNadesAdnTargetsByMapId(mapId as string).then((data): void => {
-      console.log(data);
+      if (data.nades.length > 0) {
+        data.nades[data.nades.length - 1].isSelected = true;
+      }
+      if (data.targets.length > 0) {
+        data.targets[data.targets.length - 1].isSelected = true;
+      }
       setMap(data.map);
-      // setNades(data.nades);
-      // setTargets(data.targets);
-      setTargets([]);
-      setNades([]);
+      setNades(data.nades);
+      setTargets(data.targets);
     });
   }, [mapId, setNades, setTargets]);
 
@@ -97,10 +111,31 @@ const AdminMap: React.FC = () => {
       onMouseDown={handleMapMouseDown}
       onMouseUp={handleMapMouseUp}
     >
+      {nades.map(
+        (nade) =>
+          nade.fromTargetId !== null &&
+          nade.toTargetId !== null && (
+            <NadeLine
+              key={nade.id}
+              onClick={() => handleNadeLineClick(nade)}
+              isSelected={nade.isSelected}
+              fromNadeTarget={
+                targets.find((target) => target.id === nade.fromTargetId)!
+              }
+              toNadeTarget={
+                targets.find((target) => target.id === nade.toTargetId)!
+              }
+            />
+          )
+      )}
       {targets.map((target) => (
         <Target
           key={target.id}
           info={target}
+          isFormCurrentNade={
+            target.id === currentNade?.fromTargetId ||
+            target.id === currentNade?.toTargetId
+          }
           onMouseUp={(event) => handleTargetMouseUp(event, target)}
           onMouseDown={(event) => handleTargetMouseDown(event, target)}
         />

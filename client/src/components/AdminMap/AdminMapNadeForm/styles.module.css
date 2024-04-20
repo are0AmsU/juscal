@@ -1,3 +1,7 @@
+.nadeForm {
+  background-color: green;
+}
+
 .nadeFormImgs {
   display: flex;
   align-items: center;
