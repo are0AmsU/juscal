@@ -1,0 +1,25 @@
+.homeMapList {
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.homeMapItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.homeMapItemImgWrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.homeMapItemImg {
+  height: 100%;
+}
+
+.homeMapItemTitle {
+  text-align: center;
+  color: white;
+}

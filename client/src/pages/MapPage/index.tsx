@@ -1,14 +1,8 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import Map from '../../components/Map'
+import React from "react";
+import ViewMap from "../../modules/ViewMap";
 
 const MapPage: React.FC = () => {
+  return <ViewMap />;
+};
 
-  const { name } = useParams()
-
-  return (
-    <></>
-  )
-}
-
-export default MapPage
+export default MapPage;

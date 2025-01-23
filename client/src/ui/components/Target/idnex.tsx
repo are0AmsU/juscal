@@ -1,10 +1,13 @@
 import React from "react";
 import styles from "./style.module.css";
 import { ITargetProps } from "./types";
+import { REACT_APP_API_URL } from "../../../consts";
 
 const Target: React.FC<ITargetProps> = ({
   info,
-  isFormCurrentNade,
+  isCurrent,
+  isSelected,
+  onClick,
   onMouseUp,
   onMouseDown,
 }) => {
@@ -12,15 +15,18 @@ const Target: React.FC<ITargetProps> = ({
     <button
       className={
         styles.target +
-        (info.isSelected ? " " + styles.targetSelected : "") +
-        (isFormCurrentNade ? " " + styles.targetNade : "")
+        (isCurrent ? " " + styles.targetSelected : "") +
+        (isSelected ? " " + styles.targetNade : "")
       }
       style={{
         left: `calc(50% - ${info.coordinates[0]}px)`,
         top: `calc(50% - ${info.coordinates[1]}px)`,
         transform: `translate(-50%, -50%)`,
-        backgroundImage: info.icon ? `url(${info.icon})` : "none",
+        backgroundImage: info.icon
+          ? `url(${REACT_APP_API_URL + info.icon})`
+          : "none",
       }}
+      onClick={onClick}
       onMouseUp={onMouseUp}
       onMouseDown={onMouseDown}
     ></button>

@@ -1,98 +1,114 @@
 import React from "react";
 import { ITarget, TargetTypes } from "../../../ui/types";
 import generateRandomNumber from "../../../ui/helpers/generateRandomNumber";
-import {
-  IAdminMapPageContext,
-  useAdminMapPageContext,
-} from "../../../ui/contexts/AdminMapPageContext";
+import { IMapContext, useMapContext } from "../../../ui/contexts/MapContext";
 import styles from "./style.module.css";
 import Select from "../../../ui/components/Select/idnex";
 import { targetIcons } from "../../../consts";
-import { createTarget, deleteTargetById } from "../../../http/targetApi";
+import {
+  createTarget,
+  deleteTarget,
+  updateTargetType,
+} from "../../../http/targetApi";
 import { useParams } from "react-router-dom";
+import { createNade, updateNade } from "../../../http/nadeApi";
+import { getMaxIdFromMap } from "../../../ui/helpers/getMaxIdFromMap";
+import { getTargetTypeNames } from "../../../http/targetTypeApi";
+import { flushSync } from "react-dom";
+import { createNadeTarget } from "../../../http/nadeTargetApi";
 
 const AdminMapTargetForm: React.FC = () => {
   const { mapId } = useParams();
-  const { targets, setTargets, nades, setNades } =
-    useAdminMapPageContext() as IAdminMapPageContext;
-  const currentTarget = targets.find((target) => target.isSelected) || null;
-  const currentNade = nades.find((nade) => nade.isSelected) || null;
+  const {
+    targets,
+    setTargets,
+    nades,
+    setNades,
+    currentTarget,
+    currentTargetId,
+    setCurrentTargetId,
+    setCurrentNadeId,
+    currentNade,
+  } = useMapContext() as IMapContext;
+  const [targetTypeNames, setTargetTypeNames] = React.useState<TargetTypes[]>(
+    []
+  );
 
   const handleDeleteTarget = async (): Promise<void> => {
-    // await deleteTargetById(currentTarget?.id as number);
-    setTargets((state) => {
-      const newState = state.filter(
-        (target) => target.id !== currentTarget?.id
-      );
-      if (newState.length > 0) {
-        newState[newState.length - 1].isSelected = true;
+    if (!currentTarget) return;
+    await deleteTarget(currentTarget.id);
+    nades.forEach((nade) => {
+      if (
+        nade.fromTargetId === currentTarget.id ||
+        nade.toTargetId === currentTarget.id
+      ) {
+        nades.delete(nade.id);
+        setCurrentNadeId(getMaxIdFromMap(nades));
       }
-      return newState;
     });
-    if (currentTarget?.type === null) {
-      currentNade!.fromTargetId = null;
-    } else {
-      currentNade!.toTargetId = null;
-    }
-    setNades(nades.slice());
+    setNades((state) => new Map(state));
+    targets.delete(currentTarget.id);
+    setCurrentTargetId(getMaxIdFromMap(targets));
+    setTargets((state) => new Map(state));
   };
 
-  const handleAddFromTargetToCurrentNadeClick = (): void => {
-    if (currentTarget?.type === null) {
-      currentNade!.fromTargetId = currentTarget.id;
-    } else {
-      currentNade!.toTargetId = currentTarget!.id;
+  const handleSelectForNadeClick = async () => {
+    if (currentNade && currentTarget) {
+      await createNadeTarget(currentNade.id, currentTarget.id);
+      if (currentTarget.type === null) {
+        currentNade.fromTargetId = currentTarget.id;
+      } else {
+        currentNade.toTargetId = currentTarget.id;
+      }
+      setTargets((state) => new Map(state));
     }
-    setTargets(targets.slice());
   };
 
-  const handleDeleteTargetFromFormClick = (): void => {
-    if (currentTarget?.type === null) {
-      currentNade!.fromTargetId = null;
-    } else {
-      currentNade!.toTargetId = null;
-    }
-    setNades(nades.slice());
+  const handleTargetNadeTypeSelect = async (targetType: TargetTypes | null) => {
+    if (!currentTarget) return;
+    const newTarget = await updateTargetType(currentTarget.id, targetType);
+    currentTarget.type = targetType;
+    currentTarget.icon = newTarget.icon;
+    setTargets((state) => new Map(state));
   };
 
-  const handleTargetNadeTypeSelect = (targetType: TargetTypes) => {
-    currentTarget!.type = targetType;
-    currentTarget!.icon = targetIcons[targetType] || null;
-    setTargets(targets.slice());
-  };
+  React.useEffect(() => {
+    getTargetTypeNames().then((data) => setTargetTypeNames(data));
+  }, []);
 
   return (
     <div className={styles.targetForm}>
       <h2>Current Target Form</h2>
       <button onClick={handleDeleteTarget}>Delete Target</button>
-      {((currentNade?.fromTargetId === null && currentTarget?.type === null) ||
-        (currentNade?.toTargetId === null && currentTarget?.type !== null)) && (
-        <button onClick={handleAddFromTargetToCurrentNadeClick}>
-          Add From Target To Nade
-        </button>
+      {currentNade &&
+        currentTarget &&
+        ((currentTarget.type === null && currentNade.fromTargetId === null) ||
+          (currentTarget.type !== null && currentNade.toTargetId === null)) && (
+          <button onClick={handleSelectForNadeClick}>Select For Nade</button>
+        )}
+      {targetTypeNames.length > 0 && (
+        <>
+          <p>Select Target Type</p>
+          <Select
+            selectedOption={
+              currentTarget?.type
+                ? {
+                    value: currentTarget.type,
+                    label: currentTarget.type as string,
+                  }
+                : { value: null, label: "none" }
+            }
+            onSelect={handleTargetNadeTypeSelect}
+            options={[
+              ...targetTypeNames.map((name) => ({
+                value: name,
+                label: name,
+              })),
+              { value: null, label: "none" },
+            ]}
+          />
+        </>
       )}
-      {(currentNade?.fromTargetId === currentTarget?.id ||
-        currentNade?.toTargetId === currentTarget?.id) && (
-        <button onClick={handleDeleteTargetFromFormClick}>
-          Delete Target From Form
-        </button>
-      )}
-      <p>Select Target Type</p>
-      <Select
-        selectedOption={
-          currentTarget?.type
-            ? { value: currentTarget.type, label: currentTarget.type as string }
-            : { value: null, label: "none" }
-        }
-        onSelect={handleTargetNadeTypeSelect}
-        options={[
-          ...Object.values(TargetTypes).map((targetType) => ({
-            value: targetType,
-            label: targetType,
-          })),
-          { value: null, label: "none" },
-        ]}
-      />
     </div>
   );
 };

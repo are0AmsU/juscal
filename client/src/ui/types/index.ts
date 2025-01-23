@@ -3,14 +3,14 @@ export type CoordinatesType = [number, number];
 export interface IMapInfoForm {
   id?: number;
   name: string;
-  img: File | null;
+  image: File | null;
   preview: File | null;
 }
 
 export interface IMap {
   id: number;
   name: string;
-  img: string;
+  image: string;
   preview: string;
 }
 
@@ -26,14 +26,19 @@ export enum TargetTypes {
   MOLOTOV = "molotov",
 }
 
+export interface INadeImg {
+  id: number;
+  path: string;
+  index: number;
+}
+
 export interface INade {
   id: number;
   name: string | null;
   description: string | null;
+  images: INadeImg[];
   fromTargetId: number | null;
   toTargetId: number | null;
-  photoPaths: string[];
-  isSelected: boolean;
 }
 
 export interface ITarget {
@@ -41,7 +46,6 @@ export interface ITarget {
   icon: string | null;
   type: TargetTypes | null;
   coordinates: CoordinatesType;
-  isSelected: boolean;
 }
 
 export enum CSSVariables {
@@ -69,5 +73,3 @@ export interface INadeStore {
     [key in TargetTypes]?: { path: string; nadeTypeId: number };
   };
 }
-
-export type NotSavedEntitiesIdsType = { nades: number[]; targets: number[] };

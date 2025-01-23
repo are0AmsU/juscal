@@ -1,12 +1,8 @@
 import React from "react";
-import Map from "../../../components/Map";
+import Minimap from "../../../components/Map";
 import { useParams } from "react-router-dom";
 import { CoordinatesType, IMap, INade, ITarget } from "../../../ui/types";
-import { getMapAndNadesAdnTargetsByMapId } from "../../../http/adminMapApi";
-import {
-  IAdminMapPageContext,
-  useAdminMapPageContext,
-} from "../../../ui/contexts/AdminMapPageContext";
+import { IMapContext, useMapContext } from "../../../ui/contexts/MapContext";
 import Target from "../../../ui/components/Target/idnex";
 import {
   IUseSpacePressed,
@@ -14,20 +10,29 @@ import {
 } from "../../../ui/hooks/useSpacePressed";
 import styles from "./style.module.css";
 import NadeLine from "../../../ui/components/NadeLine";
+import { getTargets, updateTargetCoordinates } from "../../../http/targetApi";
+import { getMapInfo } from "../../../http/mapApi";
+import { getNades } from "../../../http/nadeApi";
+import { getMaxIdFromArray } from "../../../ui/helpers/getMaxIdFromArray";
 
 const AdminMap: React.FC = () => {
   const { mapId } = useParams();
-  const { targets, setTargets, nades, setNades } =
-    useAdminMapPageContext() as IAdminMapPageContext;
+  const {
+    targets,
+    setTargets,
+    nades,
+    setNades,
+    currentTarget,
+    setCurrentTargetId,
+    setCurrentNadeId,
+    currentTargetId,
+    currentNadeId,
+    currentNade,
+  } = useMapContext() as IMapContext;
   const [map, setMap] = React.useState<IMap | null>(null);
+  const coordinatesTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const isTargetMovingRef = React.useRef<boolean>(false);
   const isSpacePressedRef = useSpacePressed() as IUseSpacePressed;
-  const currentNade = nades.find((nade) => nade.isSelected) || null;
-  const currentTarget = targets.find((target) => target.isSelected) || null;
-  const currentFromNadeTarget =
-    targets.find((target) => target.id === currentNade?.fromTargetId) || null;
-  const currentToNadeTarget =
-    targets.find((target) => target.id === currentNade?.toTargetId) || null;
 
   const handleTargetMouseUp = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -40,28 +45,30 @@ const AdminMap: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>,
     target: ITarget
   ) => {
-    if (isSpacePressedRef.current) {
+    if (isSpacePressedRef.current || !currentTarget) {
       return;
     }
     isTargetMovingRef.current = true;
-    const newTargets = [...targets];
-    newTargets.forEach((trg) => {
-      if (trg.id === target.id) {
-        trg.isSelected = true;
-        return;
-      }
-      trg.isSelected = false;
-    });
-    setTargets(newTargets);
+    setCurrentTargetId(target.id);
   };
 
   const handleMapMouseMove = (currentCoordinates: CoordinatesType): void => {
-    if (isSpacePressedRef.current) {
+    if (isSpacePressedRef.current || !currentTarget) {
       return;
     }
     if (isTargetMovingRef.current) {
-      currentTarget!.coordinates = currentCoordinates;
-      setTargets(targets.slice());
+      currentTarget.coordinates = currentCoordinates;
+      setTargets((state) => new Map(state));
+      if (coordinatesTimerRef.current) {
+        clearTimeout(coordinatesTimerRef.current);
+      }
+
+      coordinatesTimerRef.current = setTimeout(async () => {
+        await updateTargetCoordinates(
+          currentTarget.id,
+          currentTarget.coordinates
+        );
+      }, 100);
     }
   };
 
@@ -78,69 +85,63 @@ const AdminMap: React.FC = () => {
     isTargetMovingRef.current = false;
   };
 
-  const handleNadeLineClick = (nade: INade) => {
-    nades.forEach((nd) => (nd.isSelected = false));
-    nade.isSelected = true;
-    setNades(nades.slice());
-  };
-
-  console.log(nades, targets);
-
+  const handleNadeLineClick = (nade: INade) => {};
   React.useEffect(() => {
-    getMapAndNadesAdnTargetsByMapId(mapId as string).then((data): void => {
-      if (data.nades.length > 0) {
-        data.nades[data.nades.length - 1].isSelected = true;
+    if (!mapId) return;
+    Promise.all([getMapInfo(mapId), getTargets(mapId), getNades(mapId)]).then(
+      ([mapData, targetsData, nadesData]) => {
+        console.log(nadesData);
+        setMap(mapData);
+        setTargets(new Map(targetsData.map((target) => [target.id, target])));
+        setCurrentTargetId(getMaxIdFromArray(targetsData));
+        setNades(
+          new Map(
+            nadesData.map((nade) => {
+              return [nade.id, nade];
+            })
+          )
+        );
+        setCurrentNadeId(getMaxIdFromArray(nadesData));
       }
-      if (data.targets.length > 0) {
-        data.targets[data.targets.length - 1].isSelected = true;
-      }
-      setMap(data.map);
-      setNades(data.nades);
-      setTargets(data.targets);
-    });
-  }, [mapId, setNades, setTargets]);
+    );
+  }, [mapId, setCurrentNadeId, setCurrentTargetId, setNades, setTargets]);
 
   if (!map) {
     return <h2>Loading</h2>;
   }
 
   return (
-    <Map
+    <Minimap
       info={map}
       onMouseMove={handleMapMouseMove}
       onMouseDown={handleMapMouseDown}
       onMouseUp={handleMapMouseUp}
     >
-      {nades.map(
-        (nade) =>
-          nade.fromTargetId !== null &&
-          nade.toTargetId !== null && (
-            <NadeLine
-              key={nade.id}
-              onClick={() => handleNadeLineClick(nade)}
-              isSelected={nade.isSelected}
-              fromNadeTarget={
-                targets.find((target) => target.id === nade.fromTargetId)!
-              }
-              toNadeTarget={
-                targets.find((target) => target.id === nade.toTargetId)!
-              }
-            />
-          )
-      )}
-      {targets.map((target) => (
+      {Array.from(nades.entries()).map(([id, nade]) => (
+        <NadeLine
+          key={nade.id}
+          onClick={() => handleNadeLineClick(nade)}
+          isSelected={id === currentNadeId}
+          fromTarget={targets.get(nade.fromTargetId || Infinity)}
+          toTarget={targets.get(nade.toTargetId || Infinity)}
+        />
+      ))}
+      {Array.from(targets.entries()).map(([id, target]) => (
         <Target
           key={target.id}
           info={target}
-          isFormCurrentNade={
-            target.id === currentNade?.fromTargetId ||
-            target.id === currentNade?.toTargetId
+          isCurrent={id === currentTargetId}
+          isSelected={
+            (currentNade &&
+              (target.id === currentNade.fromTargetId ||
+                target.id === currentNade.toTargetId)) ||
+            false
           }
           onMouseUp={(event) => handleTargetMouseUp(event, target)}
           onMouseDown={(event) => handleTargetMouseDown(event, target)}
         />
       ))}
-    </Map>
+    </Minimap>
   );
 };
 

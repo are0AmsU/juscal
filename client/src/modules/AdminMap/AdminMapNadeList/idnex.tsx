@@ -1,48 +1,38 @@
 import React from "react";
-import {
-  IAdminMapPageContext,
-  useAdminMapPageContext,
-} from "../../../ui/contexts/AdminMapPageContext";
+import { IMapContext, useMapContext } from "../../../ui/contexts/MapContext";
 import styles from "./style.module.css";
 import {
   IAdminMapFormContext,
   useAdminMapFormContext,
 } from "../../../ui/contexts/AdminMapFormContext";
+import { INade } from "../../../ui/types";
 
 const AdminMapNadeList: React.FC = () => {
-  const { nades, setNades } = useAdminMapPageContext() as IAdminMapPageContext;
-  const { nadeNameInputRef, nadeDescriptionInputRef, inputTimerRef } =
-    useAdminMapFormContext() as IAdminMapFormContext;
-  const handleClick = (nadeId: number) => {
+  const { nades, currentNade, currentNadeId, setCurrentNadeId } =
+    useMapContext() as IMapContext;
+  const { inputTimerRef } = useAdminMapFormContext() as IAdminMapFormContext;
+
+  const handleClick = (nade: INade) => {
+    if (!currentNade) return;
     if (inputTimerRef.current) {
       clearTimeout(inputTimerRef.current);
     }
-    setNades((state) => {
-      state.forEach((nade) => {
-        nade.isSelected = false;
-        if (nade.id === nadeId) {
-          nade.isSelected = true;
-          nadeNameInputRef.current!.value = nade.name!;
-          nadeDescriptionInputRef.current!.value = nade.description!;
-        }
-      });
-      return state.slice();
-    });
+    setCurrentNadeId(nade.id);
   };
 
   return (
     <div className={styles.list}>
-      {nades.map((nade) => (
+      {Array.from(nades.entries()).map(([id, nade]) => (
         <div
-          key={nade.id}
+          key={id}
           className={styles.item}
-          onClick={() => handleClick(nade.id)}
+          onClick={() => handleClick(nade)}
           style={{
-            border: "4px solid " + (nade.isSelected ? "green" : "white"),
-            opacity: nade.isSelected ? "100%" : "50%",
+            border: "4px solid " + (id === currentNadeId ? "green" : "white"),
+            opacity: id === currentNadeId ? "100%" : "50%",
           }}
         >
-          id: {nade.id} {nade.name && "name: " + nade.name}
+          id: {id} {nade.name && "name: " + nade.name}
         </div>
       ))}
     </div>
