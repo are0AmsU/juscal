@@ -19,8 +19,8 @@ const Target: React.FC<ITargetProps> = ({
         (isSelected ? " " + styles.targetNade : "")
       }
       style={{
-        left: `calc(50% - ${info.coordinates[0]}px)`,
-        top: `calc(50% - ${info.coordinates[1]}px)`,
+        left: info.coordinates[0] + "%",
+        top: info.coordinates[1] + "%",
         transform: `translate(-50%, -50%)`,
         backgroundImage: info.icon
           ? `url(${REACT_APP_API_URL + info.icon})`

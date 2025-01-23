@@ -35,8 +35,8 @@ class TargetController
   {
     try {
       $target = Target::create([
-        'coordinate_x' => 0,
-        'coordinate_y' => 0,
+        'coordinate_x' => 50,
+        'coordinate_y' => 50,
         'map_id' => $mapId,
         'target_type_id' => null
       ]);

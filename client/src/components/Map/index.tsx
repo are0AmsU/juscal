@@ -4,7 +4,7 @@ import { IMapProps, IOnMouseDownDataRef, MapCursors } from "./types";
 import { isArrayEqual } from "../../ui/helpers/isArrayEqual";
 import { CoordinatesType } from "../../ui/types";
 import { REACT_APP_API_URL } from "../../consts";
-import getClickCoordinatesByEvent from "./helpers/getClickCoordinatesByEvent";
+import { getClickCoordinatesByEvent } from "./helpers/getClickCoordinatesByEvent";
 import {
   IUseSpacePressed,
   useSpacePressed,
@@ -152,12 +152,13 @@ const Minimap: React.FC<IMapProps> = ({
             transform: `scale(${mapScale}) translate(${
               mapPosition[0] / mapScale
             }px, ${mapPosition[1] / mapScale}px)`,
-            backgroundImage: `url("${
-              REACT_APP_API_URL + info.image.split("\\").join("/")
-            }")`,
           }}
         >
           {children}
+          <img
+            src={REACT_APP_API_URL + info.image.split("\\").join("/")}
+            alt={info.name + " Image"}
+          />
         </div>
       </div>
     </div>
