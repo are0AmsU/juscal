@@ -29,6 +29,7 @@ const AdminMap: React.FC = () => {
     currentNadeId,
     currentNade,
   } = useMapContext() as IMapContext;
+  const mapImgRef = React.useRef(null);
   const [map, setMap] = React.useState<IMap | null>(null);
   const coordinatesTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const isTargetMovingRef = React.useRef<boolean>(false);
@@ -112,6 +113,7 @@ const AdminMap: React.FC = () => {
 
   return (
     <Minimap
+      ref={mapImgRef}
       info={map}
       onMouseMove={handleMapMouseMove}
       onMouseDown={handleMapMouseDown}

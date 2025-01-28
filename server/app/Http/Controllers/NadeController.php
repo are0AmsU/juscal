@@ -6,6 +6,7 @@ use App\Models\Nade;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 
 class NadeController extends Controller
 {

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Map;
 use App\Models\Target;
 use App\Models\NadeTarget;
+use Illuminate\Support\Facades\Log;
+
+use function Pest\Laravel\json;
 
 class Nade extends Model
 {
@@ -34,7 +37,8 @@ class Nade extends Model
             'id',
             'id',
             'target_id'
-        )->whereNull('target_type_id');
+        )
+            ->whereNull('target_type_id');
     }
 
     public function toTarget()
@@ -47,7 +51,6 @@ class Nade extends Model
             'id',
             'target_id'
         )
-            ->whereNotNull('target_type_id')
-            ->with(['targetType']);
+            ->whereNotNull('target_type_id');
     }
 }

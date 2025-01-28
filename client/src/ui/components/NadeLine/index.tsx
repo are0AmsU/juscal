@@ -9,6 +9,7 @@ const NadeLine: React.FC<INadeLineProps> = ({
   toTarget,
 }) => {
   if (fromTarget && toTarget) {
+    console.log(fromTarget.coordinates, toTarget.coordinates);
     return (
       <div
         onClick={onClick}
@@ -18,14 +19,8 @@ const NadeLine: React.FC<INadeLineProps> = ({
             Math.pow(fromTarget.coordinates[0] - toTarget.coordinates[0], 2) +
               Math.pow(fromTarget.coordinates[1] - toTarget.coordinates[1], 2)
           ),
-          left: `calc(50% - ${
-            fromTarget.coordinates[0] +
-            0.5 * (toTarget.coordinates[0] - fromTarget.coordinates[0])
-          }px)`,
-          top: `calc(50% - ${
-            toTarget.coordinates[1]! +
-            0.5 * (fromTarget.coordinates[1] - toTarget.coordinates[1])
-          }px)`,
+          left: (toTarget.coordinates[0] + fromTarget.coordinates[0]) / 2 + "%",
+          top: (toTarget.coordinates[1] + fromTarget.coordinates[1]) / 2 + "%",
           transform: `translate(-50%, -50%) rotate(${
             Math.atan2(
               toTarget.coordinates[1] - fromTarget.coordinates[1],
