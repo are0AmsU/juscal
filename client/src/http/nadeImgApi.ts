@@ -1,10 +1,10 @@
 import { $host } from ".";
-import { INadeImg } from "../ui/types";
+import { IImage } from "../ui/types";
 
 export const createNadeImg = async (
   nadeId: number,
   formData: FormData
-): Promise<INadeImg> => {
+): Promise<IImage> => {
   const { data } = await $host.post(`api/nade-img/${nadeId}`, formData);
   return data;
 };

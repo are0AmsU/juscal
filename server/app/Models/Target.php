@@ -28,9 +28,9 @@ class Target extends Model
         return $this->belongsTo(Map::class);
     }
 
-    public function targetType()
+    public function type()
     {
-        return $this->belongsTo(TargetType::class);
+        return $this->belongsTo(TargetType::class, 'target_type_id');
     }
 
     public function nades()

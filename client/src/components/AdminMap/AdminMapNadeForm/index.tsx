@@ -1,6 +1,6 @@
 import React from "react";
 import { IMapContext, useMapContext } from "../../../ui/contexts/MapContext";
-import { INade, INadeImg, TargetTypes } from "../../../ui/types";
+import { INade, IImage, TargetTypes } from "../../../ui/types";
 import styles from "./styles.module.css";
 import getImgUrlByFile from "../../../ui/helpers/getImgUrlByFile";
 import {
@@ -44,10 +44,12 @@ const AdminMapNadeForm: React.FC = () => {
     const setNewPhotoToNadePhotos = async () => {
       if (!currentNade) return;
       const inputElement = event.target as HTMLInputElement;
-      const file = inputElement.files![0];
+      if (!inputElement.files) return;
+      const file = inputElement.files[0];
       inputElement.value = "";
       const formData = new FormData();
       formData.append("image", file);
+      console.log(formData, file);
       const nadeImg = await createNadeImg(currentNade.id, formData);
       currentNade.images.push(nadeImg);
       setNades((nades) => new Map(nades));
@@ -64,8 +66,8 @@ const AdminMapNadeForm: React.FC = () => {
   };
 
   const handleNadeImgReplaceIndexes = async (
-    firstNadeImg: INadeImg,
-    secondNadeImg: INadeImg
+    firstNadeImg: IImage,
+    secondNadeImg: IImage
   ) => {
     if (!currentNade) return;
     await replaceNadeImgIndexes(firstNadeImg.id, secondNadeImg.id);
@@ -164,8 +166,6 @@ const AdminMapNadeForm: React.FC = () => {
     nadeNameInputRef.current.value = currentNade.name || "";
     nadeDescriptionInputRef.current.value = currentNade.description || "";
   }, [currentNade, nadeDescriptionInputRef, nadeNameInputRef]);
-
-  console.log(currentNade);
 
   if (!currentNade) return <></>;
 

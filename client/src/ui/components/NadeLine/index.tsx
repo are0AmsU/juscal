@@ -7,17 +7,31 @@ const NadeLine: React.FC<INadeLineProps> = ({
   isSelected,
   fromTarget,
   toTarget,
+  mapImgRef,
 }) => {
-  if (fromTarget && toTarget) {
-    console.log(fromTarget.coordinates, toTarget.coordinates);
+  const [, setIsMapImg] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    setIsMapImg(true);
+  }, [mapImgRef]);
+
+  if (fromTarget && toTarget && mapImgRef.current) {
     return (
       <div
         onClick={onClick}
         className={styles.nadeLine + (isSelected ? " " + styles.selected : "")}
         style={{
           width: Math.sqrt(
-            Math.pow(fromTarget.coordinates[0] - toTarget.coordinates[0], 2) +
-              Math.pow(fromTarget.coordinates[1] - toTarget.coordinates[1], 2)
+            Math.pow(
+              ((fromTarget.coordinates[0] - toTarget.coordinates[0]) / 100) *
+                mapImgRef.current.offsetWidth,
+              2
+            ) +
+              Math.pow(
+                ((fromTarget.coordinates[1] - toTarget.coordinates[1]) / 100) *
+                  mapImgRef.current.offsetHeight,
+                2
+              )
           ),
           left: (toTarget.coordinates[0] + fromTarget.coordinates[0]) / 2 + "%",
           top: (toTarget.coordinates[1] + fromTarget.coordinates[1]) / 2 + "%",
@@ -26,7 +40,8 @@ const NadeLine: React.FC<INadeLineProps> = ({
               toTarget.coordinates[1] - fromTarget.coordinates[1],
               toTarget.coordinates[0] - fromTarget.coordinates[0]
             ) *
-            (180 / Math.PI)
+              (180 / Math.PI) +
+            3
           }deg)`,
         }}
       ></div>

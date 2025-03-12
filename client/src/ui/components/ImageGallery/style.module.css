@@ -1,0 +1,22 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+}
+
+.active {
+  position: relative;
+}
+
+.activeButton {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.other {
+  display: flex;
+}
+
+.otherImage {
+  flex: 1;
+}

@@ -7,6 +7,7 @@ use App\Traits\FileTrait;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class NadeImgController extends Controller
 {
@@ -17,7 +18,7 @@ class NadeImgController extends Controller
   {
     try {
       $request->validate([
-        'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+        'image' => 'required|image|mimes:png,jpg,jpeg|max:4096'
       ]);
 
       $nadeImgData = [
@@ -37,6 +38,12 @@ class NadeImgController extends Controller
         'path' => $nadeImg->path,
         'index' => $nadeImg->index,
       ], 201);
+    } catch (ValidationException $e) {
+      return response()->json([
+        'status' => false,
+        'type' => 'validation',
+        'message' => $e
+      ]);
     } catch (\Exception $e) {
       if (isset($nadeImgData['path'])) {
         $this->deleteFile($nadeImgData);

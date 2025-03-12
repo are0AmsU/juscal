@@ -9,9 +9,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <MainLayout>
         <Header />
-        <div className="wrapper">
-          <Router />
-        </div>
+        <Router />
       </MainLayout>
     </BrowserRouter>
   );

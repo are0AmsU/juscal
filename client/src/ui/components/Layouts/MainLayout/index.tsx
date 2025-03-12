@@ -1,6 +1,6 @@
 import React from "react";
 import { IMainLayoutProps } from "./types";
-import styles from "./styles.module.css";
+import styles from "./style.module.css";
 
 const MainLayout: React.FC<IMainLayoutProps> = ({ children }) => {
   return (

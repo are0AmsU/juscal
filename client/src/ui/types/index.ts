@@ -26,7 +26,7 @@ export enum TargetTypes {
   MOLOTOV = "molotov",
 }
 
-export interface INadeImg {
+export interface IImage {
   id: number;
   path: string;
   index: number;
@@ -36,7 +36,7 @@ export interface INade {
   id: number;
   name: string | null;
   description: string | null;
-  images: INadeImg[];
+  images: IImage[];
   fromTargetId: number | null;
   toTargetId: number | null;
 }

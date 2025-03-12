@@ -6,16 +6,20 @@ export const createTarget = async (mapId: string): Promise<ITarget> => {
   return data;
 };
 
-export const getTargets = async (
-  mapId: string,
-  isOnlyTyped: boolean = false,
-  toTargetId: number | null = null
+export const getTargets = async (mapId: string): Promise<ITarget[]> => {
+  const { data } = await $host.get(`api/target/${mapId}`);
+  return data;
+};
+
+export const getToTargets = async (mapId: string): Promise<ITarget[]> => {
+  const { data } = await $host.get(`api/target/${mapId}/to`);
+  return data;
+};
+
+export const getFromTargets = async (
+  toTargetId: number
 ): Promise<ITarget[]> => {
-  const { data } = await $host.get(
-    `api/target/${mapId}?${isOnlyTyped && "isOnlyTyped=" + isOnlyTyped}${
-      toTargetId !== null && "&toTargetId=" + toTargetId
-    }`
-  );
+  const { data } = await $host.get(`api/target/${toTargetId}/from`);
   return data;
 };
 
@@ -26,9 +30,10 @@ export const deleteTarget = async (id: number): Promise<void> => {
 
 export const updateTargetType = async (
   id: number,
-  type: TargetTypes | null
+  type: TargetTypes | null,
+  nadeId: number | null
 ): Promise<ITarget> => {
-  const { data } = await $host.put(`api/target/${id}/type`, { type });
+  const { data } = await $host.put(`api/target/${id}/type`, { type, nadeId });
   return data;
 };
 

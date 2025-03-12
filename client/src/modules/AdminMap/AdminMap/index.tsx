@@ -86,12 +86,15 @@ const AdminMap: React.FC = () => {
     isTargetMovingRef.current = false;
   };
 
-  const handleNadeLineClick = (nade: INade) => {};
+  const handleNadeLineClick = (nade: INade) => {
+    setCurrentNadeId(nade.id);
+  };
   React.useEffect(() => {
     if (!mapId) return;
+    setTargets(new Map());
+    setNades(new Map());
     Promise.all([getMapInfo(mapId), getTargets(mapId), getNades(mapId)]).then(
       ([mapData, targetsData, nadesData]) => {
-        console.log(nadesData);
         setMap(mapData);
         setTargets(new Map(targetsData.map((target) => [target.id, target])));
         setCurrentTargetId(getMaxIdFromArray(targetsData));
@@ -124,8 +127,9 @@ const AdminMap: React.FC = () => {
           key={nade.id}
           onClick={() => handleNadeLineClick(nade)}
           isSelected={id === currentNadeId}
-          fromTarget={targets.get(nade.fromTargetId || Infinity)}
-          toTarget={targets.get(nade.toTargetId || Infinity)}
+          fromTarget={targets.get(nade.fromTargetId || Infinity) || null}
+          toTarget={targets.get(nade.toTargetId || Infinity) || null}
+          mapImgRef={mapImgRef}
         />
       ))}
       {Array.from(targets.entries()).map(([id, target]) => (

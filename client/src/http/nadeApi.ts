@@ -12,7 +12,17 @@ export const getNades = async (mapId: string): Promise<INade[]> => {
 };
 
 export const getNadeTypes = async () => {
-  const data = await $host.get("api/nade/types");
+  const { data } = await $host.get("api/nade/types");
+  return data;
+};
+
+export const getNadeByTargetsIds = async (
+  fromTargetId: number,
+  toTargetId: number
+): Promise<INade[]> => {
+  const { data } = await $host.get(
+    `api/nade/get-by-targets?fromTargetId=${fromTargetId}&toTargetId=${toTargetId}`
+  );
   return data;
 };
 

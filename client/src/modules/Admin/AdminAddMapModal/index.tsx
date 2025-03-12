@@ -19,10 +19,14 @@ const AdminAddMapModal: React.FC = () => {
     const name = nameInputRef.current?.value;
     const img = imgInputRef.current?.files![0];
     const preview = previewInputRef.current?.files![0];
-    if (name === "") {
-      return;
-    }
-    if (!img || !preview) {
+    if (
+      name === "" ||
+      !img ||
+      !preview ||
+      !imgInputRef.current ||
+      !nameInputRef.current ||
+      !previewInputRef.current
+    ) {
       return;
     }
     const formData = new FormData();
@@ -31,7 +35,7 @@ const AdminAddMapModal: React.FC = () => {
     formData.append("preview", preview as File);
     const newMap: IMap = await createMap(formData);
     setMaps([...maps, newMap]);
-    nameInputRef.current!.value = "";
+    nameInputRef.current.value = "";
     imgInputRef.current.value = "";
     previewInputRef.current.value = "";
     setIsAddMapFormOpened(false);

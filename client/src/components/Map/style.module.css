@@ -15,3 +15,8 @@
 .mapImg {
   position: relative;
 }
+
+.mapImg img {
+  pointer-events: none;
+  user-select: none;
+}

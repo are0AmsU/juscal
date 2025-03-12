@@ -5,17 +5,33 @@
   width: 40px;
   height: 40px;
   position: absolute;
-  padding: 13px;
   border: none;
   border-radius: 50%;
   background-color: #2c2b2b;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: 15px;
+  background-size: 40%;
+  transition: transform .3s, background-color .3s, opacity .3s;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.target:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.disabled {
+  opacity: 50%;
+}
+
+.fromTarget {
+  width: 30px;
+  height: 30px;
 }
 
 .targetSelected {
   background-color: aqua;
+  transform: translate(-50%, -50%) scale(1.2)
 }
 
 .targetNade {

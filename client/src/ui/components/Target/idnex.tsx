@@ -7,6 +7,7 @@ const Target: React.FC<ITargetProps> = ({
   info,
   isCurrent,
   isSelected,
+  disabled,
   onClick,
   onMouseUp,
   onMouseDown,
@@ -16,12 +17,13 @@ const Target: React.FC<ITargetProps> = ({
       className={
         styles.target +
         (isCurrent ? " " + styles.targetSelected : "") +
-        (isSelected ? " " + styles.targetNade : "")
+        (isSelected ? " " + styles.targetNade : "") +
+        (disabled ? " " + styles.disabled : "") +
+        (info.type === null ? " " + styles.fromTarget : "")
       }
       style={{
         left: info.coordinates[0] + "%",
         top: info.coordinates[1] + "%",
-        transform: `translate(-50%, -50%)`,
         backgroundImage: info.icon
           ? `url(${REACT_APP_API_URL + info.icon})`
           : "none",

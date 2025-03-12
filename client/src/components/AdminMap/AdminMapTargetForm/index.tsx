@@ -15,7 +15,11 @@ import { createNade, updateNade } from "../../../http/nadeApi";
 import { getMaxIdFromMap } from "../../../ui/helpers/getMaxIdFromMap";
 import { getTargetTypeNames } from "../../../http/targetTypeApi";
 import { flushSync } from "react-dom";
-import { createNadeTarget } from "../../../http/nadeTargetApi";
+import {
+  createNadeTarget,
+  deleteNadeTarget,
+} from "../../../http/nadeTargetApi";
+import { IOption } from "../../../ui/components/Select/types";
 
 const AdminMapTargetForm: React.FC = () => {
   const { mapId } = useParams();
@@ -64,9 +68,23 @@ const AdminMapTargetForm: React.FC = () => {
     }
   };
 
+  const handleDeleteTargetFromNade = async () => {
+    if (currentNade && currentTarget) {
+      await deleteNadeTarget(currentNade.id, currentTarget.id);
+      setTargets((state) => new Map(state));
+    }
+  };
+
   const handleTargetNadeTypeSelect = async (targetType: TargetTypes | null) => {
-    if (!currentTarget) return;
-    const newTarget = await updateTargetType(currentTarget.id, targetType);
+    if (!currentTarget || !currentNade) return;
+    const newTarget = await updateTargetType(
+      currentTarget.id,
+      targetType,
+      currentNade.fromTargetId === currentTarget.id ||
+        currentNade.toTargetId === currentTarget.id
+        ? currentNade.id
+        : null
+    );
     currentTarget.type = targetType;
     currentTarget.icon = newTarget.icon;
     setTargets((state) => new Map(state));
@@ -75,6 +93,44 @@ const AdminMapTargetForm: React.FC = () => {
   React.useEffect(() => {
     getTargetTypeNames().then((data) => setTargetTypeNames(data));
   }, []);
+
+  const filterTargetTypeNames = (): IOption[] => {
+    if (!currentTarget) return [];
+    const isFromNadeWithPair = Array.from(nades.values()).reduce(
+      (total, current) => {
+        if (
+          (current.toTargetId === currentTarget.id &&
+            current.fromTargetId !== null) ||
+          (current.fromTargetId === currentTarget.id &&
+            current.toTargetId !== null)
+        ) {
+          return true;
+        }
+        return total;
+      },
+      false
+    );
+    if (isFromNadeWithPair) {
+      if (currentTarget.type) {
+        return [
+          ...targetTypeNames
+            .filter((name) => name !== currentTarget.type)
+            .map((name) => ({ value: name, label: name })),
+        ];
+      }
+      return [];
+    }
+    return [
+      ...targetTypeNames
+        .filter((name) => name !== currentTarget.type)
+        .map((name) => ({ value: name, label: name })),
+      { value: null, label: "none" },
+    ];
+  };
+
+  if (!currentTarget) {
+    return <></>;
+  }
 
   return (
     <div className={styles.targetForm}>
@@ -86,12 +142,20 @@ const AdminMapTargetForm: React.FC = () => {
           (currentTarget.type !== null && currentNade.toTargetId === null)) && (
           <button onClick={handleSelectForNadeClick}>Select For Nade</button>
         )}
+      {currentNade &&
+        currentTarget &&
+        (currentNade.fromTargetId === currentTarget.id ||
+          currentNade.toTargetId === currentTarget.id) && (
+          <button onClick={handleDeleteTargetFromNade}>
+            Delete Target From Nade
+          </button>
+        )}
       {targetTypeNames.length > 0 && (
         <>
           <p>Select Target Type</p>
           <Select
             selectedOption={
-              currentTarget?.type
+              currentTarget.type
                 ? {
                     value: currentTarget.type,
                     label: currentTarget.type as string,
@@ -99,13 +163,7 @@ const AdminMapTargetForm: React.FC = () => {
                 : { value: null, label: "none" }
             }
             onSelect={handleTargetNadeTypeSelect}
-            options={[
-              ...targetTypeNames.map((name) => ({
-                value: name,
-                label: name,
-              })),
-              { value: null, label: "none" },
-            ]}
+            options={filterTargetTypeNames()}
           />
         </>
       )}

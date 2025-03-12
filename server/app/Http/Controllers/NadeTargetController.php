@@ -39,4 +39,31 @@ class NadeTargetController
       ], 500);
     }
   }
+
+  public function delete(Request $request)
+  {
+    try {
+      $request->validate([
+        'nadeId' => 'required|exists:nades,id',
+        'targetId' => 'required|exists:targets,id'
+      ]);
+
+      NadeTarget::where('nade_id', $request->nadeId)->where('target_id', $request->targetId)->delete();
+
+      return response()->json([
+        'status' => true,
+        'message' => 'NadeTarget deleted.'
+      ]);
+    } catch (ValidationException $e) {
+      return response()->json([
+        'status' => false,
+        'message' => 'Not correted ids.'
+      ]);
+    } catch (Exception $e) {
+      return response()->json([
+        'status' => false,
+        'message' => $e->getMessage()
+      ]);
+    }
+  }
 }

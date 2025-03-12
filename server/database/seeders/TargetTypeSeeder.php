@@ -16,22 +16,22 @@ class TargetTypeSeeder extends Seeder
 
         TargetType::create([
             'name' => 'flash',
-            'icon' => 'storage/icons/flash.svg'
+            'icon' => 'icons/flash.svg'
         ]);
 
         TargetType::create([
             'name' => 'hae',
-            'icon' => 'storage/icons/hae.svg'
+            'icon' => 'icons/hae.svg'
         ]);
 
         TargetType::create([
             'name' => 'molotov',
-            'icon' => 'storage/icons/molotov.svg'
+            'icon' => 'icons/molotov.svg'
         ]);
 
         TargetType::create([
             'name' => 'smoke',
-            'icon' => 'storage/icons/smoke.svg'
+            'icon' => 'icons/smoke.svg'
         ]);
     }
 }
